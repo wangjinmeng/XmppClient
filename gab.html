@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/gab.css">
+    <script src="plugin/jquery/jquery.min.js"></script>
+    <script src="plugin/strophe/strophe.js"></script>
+    <script src="plugin/util/util.js"></script>
+    <script src="js/tool.js"></script>
+    <script src="js/chatBox.js"></script>
+    <script src="js/gab.js"></script>
+</head>
+<body>
+<div id="main-panel" class="hidden">
+    <div id="roster-area">
+        <div class="contact-wp box-shadow">
+            <div class="contact-tt" popup-header>
+                <div class="contact-tt-name js-name">-_-</div>
+                <select name="" id="js-change-status" class="contact-tt-status">
+                    <option value="online">在线</option>
+                    <option value="offline">离线</option>
+                    <option value="away">离开</option>
+                </select>
+                <div class="contact-tt-status"></div>
+            </div>
+            <div class="contact-cont">
+                <div class="contact-list" id="js-contact-list"></div>
+                <div class="contact-handle">
+                    <a id="js-add-contact">+</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

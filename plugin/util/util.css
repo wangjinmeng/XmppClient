@@ -1,0 +1,379 @@
+
+/**遮罩**/
+.util-mask{
+    position:relative;
+}
+
+.util-mask-container{
+    display:none;
+}
+
+.util-mask-container.overlay{
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+
+}
+
+.util-mask-overlay{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color:rgba(0,0,0,0.4);
+}
+
+
+.util-mask-loading{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin:auto;
+    height:90px;
+    width:90px;
+    max-width:80%;
+    background-color:rgba(0,0,0,0.6);
+    border-radius:8px;
+    color:white;
+}
+
+.util-mask-loading:before{
+    content:url('../asset/loading.gif');
+    position:absolute;
+    top:22px;
+    left:0;
+    right:0;
+    width:30px;
+    height:30px;
+    margin:auto;
+}
+
+.util-mask-loading-msg{
+    position:absolute;
+    bottom:8px;
+    left:0;
+    right:0;
+    margin:auto;
+    line-height:20px;
+    font-size:12px;
+    text-align:center;
+}
+
+
+
+.util-mask-container.active .util-mask-loading{
+    -webkit-animation-fill-mode:both;
+    animation-fill-mode:both;
+    -webkit-animation:bounceIn 200ms;
+    animation:bounceIn 200ms;
+}
+
+
+.util-mask-toast{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:40px;
+    margin:auto;
+    width:120px;
+    font-size:14px;
+    text-align:center;
+    line-height:24px;
+    padding:4px 10px;
+    max-width:80%;
+    background-color:rgba(0,0,0,0.8);
+    border-radius:4px;
+    box-shadow:0px 0px 6px #666;
+    color:white;
+}
+
+.util-mask-toast.info{
+
+}
+
+.util-mask-toast.warn{
+    background-color:rgba(248,148,6,0.8);
+}
+
+.util-mask-toast.error{
+    background-color:rgba(189,94,47,0.8);
+}
+
+.util-mask-toast.active{
+    -webkit-animation-fill-mode:both;
+    animation-fill-mode:both;
+    -webkit-animation:fadeIn 200ms;
+    animation:fadeIn 200ms;
+}
+
+.util-mask-toast.deactive{
+    -webkit-animation-fill-mode:both;
+    animation-fill-mode:both;
+    -webkit-animation:shirt 200ms;
+    animation:bounceOut 200ms;
+}
+
+/**对话框**/
+.util-dialog{
+    position:absolute;
+    max-width:90%;
+    max-height:90%;
+    margin:auto;
+    overflow:auto;
+    background-color:#fff;
+    border:solid 1px #ddd;
+    box-shadow:0px 0px 8px #666;
+    border-radius:4px;
+}
+
+.util-mask-container.active .util-dialog{
+    -webkit-animation-fill-mode:both;
+    animation-fill-mode:both;
+    -webkit-animation:bounceIn 200ms;
+    animation:bounceIn 200ms;
+}
+
+
+.util-dialog-header{
+    position:relative;
+    height:40px;
+    line-height:40px;
+    font-size:20px;
+    color:#222;
+    border-bottom:solid 1px #e2e2e2;
+    background-color:#fff;
+    cursor:move;
+    padding:0px 10px;
+}
+
+.util-dialog-tool{
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    right:8px;
+    margin:auto;
+}
+
+.util-dialog-fullscreen{
+    display:inline-block;
+    vertical-align:middle;
+    background-image:url('../asset/icon.png');
+    background-position:-32px -40px;
+    font-size:16px;
+    width:16px;
+    height:16px;
+    line-height:16px;
+    margin-right:14px;
+}
+
+.util-dialog-fullscreen.active{
+    background-position:-65px -40px;
+}
+
+.util-dialog-close{
+    display:inline-block;
+    vertical-align:middle;
+    font-size:18px;
+    width:18px;
+    height:18px;
+    line-height:18px;
+    color:#555;
+}
+
+.util-dialog-close:hover{
+    color:red;
+
+}
+
+.util-dialog-content{
+    line-height:1.6;
+    font-size:14px;
+    color:#555;
+    padding:10px;
+    overflow:auto;
+    background-color:#fff;
+    word-wrap:break-word;
+    word-break:break-all;
+}
+
+
+.util-dialog-footer{
+    font-size:20px;
+    height:40px;
+    line-height:40px;
+    border-top:solid 1px #e2e2e2;
+    background-color:#fff;
+    padding:0px 10px;
+    text-align:center;
+}
+
+
+.util-dialog-btn{
+    display:inline-block;
+    line-height:28px;
+    height:28px;
+    border:solid 1px #dedede;
+    border-radius:4px;
+    background-color:#fff;
+    color:#555;
+    font-size:14px;
+    text-align:center;
+    padding:0px 20px;
+    margin-right:20px;
+}
+
+
+
+.util-dialog-btn:hover{
+    background-color:#f1f1f1;
+}
+
+.util-dialog-btn:active{
+    box-shadow:0px 3px 6px #666 inset;
+}
+
+
+.util-dialog-btn.ok{
+    background-color: #0095d9;
+    color:#fff;
+}
+
+.util-dialog-btn.ok:hover{
+    background-color: #0b80d9;
+}
+
+/***full**/
+.full-expand,.util-dialog.full-expand{
+    max-width:none;
+    max-height:none;
+    width:100% !important;
+    height:100% !important;
+    top:0px !important;
+    left:0px !important;
+    -webkit-transition:all 300ms;
+    transition:all 300ms;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+
+}
+
+
+.util-dialog.full-expand .util-dialog-content{
+    position:absolute;
+    top:42px;
+    bottom:42px;
+    left:0;
+    right:0;
+    margin:auto;
+}
+
+
+.util-dialog.full-expand .util-dialog-header{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    margin:auto;
+}
+
+
+.util-dialog.full .util-dialog-footer{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    margin:auto;
+}
+
+
+.min-collapse{
+    display:none;
+}
+
+
+
+/***animate***/
+@-webkit-keyframes fadeIn{
+    from {
+        opacity:0;
+    }
+
+    to {
+        opacity:1
+
+    }
+
+}
+
+@keyframes fadeIn{
+    from {
+        opacity:0;
+    }
+
+    to {
+        opacity:1
+
+    }
+
+}
+
+@-webkit-keyframes bounceIn{
+    from {
+        -webkit-transform:scale(0.1,0.1);
+        opacity:0;
+    }
+
+    to {
+        -webkit-transform:scale(1,1);
+        opacity:1;
+
+    }
+
+}
+
+@keyframes bounceIn{
+    from {
+        transform:scale(0.1,0.1);
+        opacity:0;
+    }
+
+    to {
+        transform:scale(1,1);
+        opacity:1;
+
+    }
+
+}
+
+@-webkit-keyframes bounceOut{
+    from {
+        -webkit-transform:scale(1,1);
+        opacity:1;
+    }
+
+    to {
+        -webkit-transform:scale(1.4,1.4);
+        opacity:0;
+
+    }
+
+}
+
+@keyframes bounceOut{
+    from {
+        transform:scale(1,1);
+        opacity:1;
+    }
+
+    to {
+        transform:scale(1.4,1.4);
+        opacity:0;
+
+    }
+
+}
