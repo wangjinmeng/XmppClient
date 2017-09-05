@@ -3,7 +3,7 @@
  */
 
 var chatMain=(function(){
-    var str=[
+    var $node=$([
         '<div id="main-panel" class="hidden chat-main-box  box-shadow contact-main-box">',
         '        <div class="contact-scale-wp  js-handle-scale">',
         '           <span class="js-name"></span>',
@@ -17,7 +17,7 @@ var chatMain=(function(){
         '                    <option value="away">离开</option>',
         '                </select>',
         '                <div class="contact-tt-handle">',
-        '                   <a class="handle-item js-handle-scale">-</a>',
+        '                   <a class="handle-item js-handle-scale">&times;</a>',
         '                </div>',
         '            </div>',
         '            <div class="contact-cont">',
@@ -27,7 +27,7 @@ var chatMain=(function(){
         '                </div>',
         '            </div>',
         '        </div>',
-        '</div>'].join("");
+        '</div>'].join(""));
     var tool={
         dealTime:function (time,format){
             if(!(time instanceof Date)){
@@ -51,6 +51,9 @@ var chatMain=(function(){
                 .replace('mm',_m)
                 .replace('ss',_s)
         }
+    };
+    var flagMap={
+        init:false
     };
 //表单输入值事件:inputKeyPress; 1:按键按下，2:发送
 //查找聊天记录事件：queryHistory; jid:裸jid
@@ -486,7 +489,8 @@ var chatMain=(function(){
         }
     };
     function init(){
-        var $node=$(str);
+        if(flagMap.init)return;
+        flagMap.init=true;
         $('body').append($node);
         $node.on('click','#js-approve-btn-close',function () {
             Gab.connection.send($pres({
@@ -635,18 +639,34 @@ var chatMain=(function(){
                 Gab.tipMsg('已删除');
             });
         });
-        $(document).bind('chat-main-connect',function(ev,data){
-            var conn=new Strophe.Connection(Gab.BOSH_SERVICE);
-            conn.connect(data.jid+'@'+Gab.domain,data.password,function (status) {
-                if(status===Strophe.Status.CONNECTED){
-                    $node.trigger('connected');
-                }else if(status===Strophe.Status.DISCONNECTING){
-                    $node.trigger('disconnected');
-                }
-            });
-            Gab.connection=conn;
-        });
     }
-    return init;
+    function login(data,successFun,errFun){
+        if(!flagMap.init){
+            init();
+        }
+        data=$.extend({
+            jid:'',
+            password:''
+        },data);
+        var conn=new Strophe.Connection(Gab.BOSH_SERVICE);
+        conn.connect(data.jid+'@'+Gab.domain,data.password,function (status) {
+            if(status===Strophe.Status.CONNECTED){
+                $node.trigger('connected');
+                if($.isFunction(successFun)){
+                    successFun();
+                }
+            }else if(status===Strophe.Status.AUTHFAIL){
+                $node.trigger('disconnected');
+                if($.isFunction(errFun)){
+                    errFun();
+                }
+            }
+        });
+        Gab.connection=conn;
+    }
+    return {
+        init:init,
+        login:login
+    };
 })();
 
