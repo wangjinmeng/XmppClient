@@ -93,7 +93,6 @@ body{
 
 }
 
-
 /**兼容**/
 header,nav,section,article ,aside,footer{
     display:block;
@@ -104,17 +103,4 @@ header,nav,section,article ,aside,footer{
     -moz-box-sizing:border-box;
     -o-box-sizing:border-box;
     box-sizing:border-box;
-}
-.dn{
-    display: none!important;
-}
-.gray {
-    -webkit-filter: grayscale(100%);
-    -moz-filter: grayscale(100%);
-    -ms-filter: grayscale(100%);
-    -o-filter: grayscale(100%);
-
-    filter: grayscale(100%);
-
-    filter: gray;
 }
