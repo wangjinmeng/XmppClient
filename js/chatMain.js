@@ -3,17 +3,22 @@
  */
 
 var chatMain=(function(){
-    var str=['<div id="main-panel" class="hidden">',
-        '    <div id="roster-area">',
-        '        <div class="contact-wp box-shadow">',
+    var str=[
+        '<div id="main-panel" class="hidden chat-main-box  box-shadow contact-main-box">',
+        '        <div class="contact-scale-wp  js-handle-scale">',
+        '           <span class="js-name"></span>',
+        '        </div>',
+        '        <div class="contact-wp">',
         '            <div class="contact-tt" popup-header>',
         '                <div class="contact-tt-name js-name">-_-</div>',
-        '                <select name="" id="js-change-status" class="contact-tt-status">',
+        '                <select name="" id="js-change-status" class="contact-tt-status ">',
         '                    <option value="online">在线</option>',
         '                    <option value="offline">离线</option>',
         '                    <option value="away">离开</option>',
         '                </select>',
-        '                <div class="contact-tt-status"></div>',
+        '                <div class="contact-tt-handle">',
+        '                   <a class="handle-item js-handle-scale">-</a>',
+        '                </div>',
         '            </div>',
         '            <div class="contact-cont">',
         '                <div class="contact-list" id="js-contact-list"></div>',
@@ -22,7 +27,6 @@ var chatMain=(function(){
         '                </div>',
         '            </div>',
         '        </div>',
-        '    </div>',
         '</div>'].join("");
     var tool={
         dealTime:function (time,format){
@@ -239,11 +243,12 @@ var chatMain=(function(){
         },
         init:function(){
             var node=$('' +
-                '<div class="chat-box pr" id="js-chat-box">' +
+                '<div class="chat-box pr chat-main-box" id="js-chat-box">' +
                 '<ul class="chat-box-slider" id="js-chat-box-slider"> </ul>' +
                 '</div>');
             var _this=this;
             _this.popups = util.popup(node);
+            _this.popups.hide();
             _this.$this=node;
             _this.$chatBoxSlider=node.find('#js-chat-box-slider');
             _this.$this.on('click','.js-close-msg-box',function(){
@@ -563,36 +568,39 @@ var chatMain=(function(){
             $(document).trigger('contact_del',{jid:jid});
             return false;
         });
-        chatBox.init();
-        chatBox.subscribeEvent('inputKeyPress',function (ev,data) {
-            var _jid=data.jid;
-            var _eventType=data.eventVal;
-            if(_eventType==1){
-                var notify=$msg({
-                    to:_jid,
-                    type:'chat'
-                }).c('composing',{xmlns:'http://jabber.org/protocol/chatstates'});
-                Gab.connection.send(notify);
-            }else if (_eventType==2){
-                var message=$msg({
-                    to:_jid,
-                    'type':'chat'
-                }).c('body').t(data.val).up()
-                    .c('active',{xmlns:'http://jabber.org/protocol/chatstates'});
-                Gab.storeMsg.push(_jid,{
-                    type:'send',
-                    msg:data.val,
-                    time:tool.dealTime(new Date())
-                });
-                Gab.connection.send(message);
-            }
-        });
-        chatBox.subscribeEvent('queryHistory',function (ev,data) {
-            chatBox.receiveHistory(Gab.jid_to_id(data.jid),Gab.storeMsg.get(data.jid))
+        $node.on('click','.js-handle-scale',function () {
+            $node.toggleClass('scale');
         });
         $node.bind('connected',function(){
+            chatBox.init();
+            chatBox.subscribeEvent('inputKeyPress',function (ev,data) {
+                var _jid=data.jid;
+                var _eventType=data.eventVal;
+                if(_eventType==1){
+                    var notify=$msg({
+                        to:_jid,
+                        type:'chat'
+                    }).c('composing',{xmlns:'http://jabber.org/protocol/chatstates'});
+                    Gab.connection.send(notify);
+                }else if (_eventType==2){
+                    var message=$msg({
+                        to:_jid,
+                        'type':'chat'
+                    }).c('body').t(data.val).up()
+                        .c('active',{xmlns:'http://jabber.org/protocol/chatstates'});
+                    Gab.storeMsg.push(_jid,{
+                        type:'send',
+                        msg:data.val,
+                        time:tool.dealTime(new Date())
+                    });
+                    Gab.connection.send(message);
+                }
+            });
+            chatBox.subscribeEvent('queryHistory',function (ev,data) {
+                chatBox.receiveHistory(Gab.jid_to_id(data.jid),Gab.storeMsg.get(data.jid))
+            });
             $('#main-panel').removeClass('hidden');
-            $('#roster-area').find('.js-name').text(Strophe.getNodeFromJid(Gab.connection.jid));
+            $('#main-panel').find('.js-name').text(Strophe.getNodeFromJid(Gab.connection.jid));
             var iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
             Gab.connection.sendIQ(iq,Gab.on_roster);
             Gab.connection.addHandler(Gab.on_presence,null,'presence');

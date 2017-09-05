@@ -1,38 +1,10 @@
-/*h1{*/
-    /*text-align: center;*/
-/*}*/
-
-/*#log{*/
-    /*padding: 10px;*/
-/*}*/
-/*.button{*/
-    /*padding: 10px;*/
-    /*background-color: #ddd;*/
-    /*border:1px solid #666;*/
-    /*font-weight: bold;*/
-/*}*/
-/*.button:hover{*/
-    /*background-color: #ddf;*/
-/*}*/
-/*#toolbar{*/
-    /*text-align: center;*/
-    /*margin-bottom: 15px;*/
-/*}*/
-/*#chat-area{*/
-    /*float: left;*/
-    /*width: 600px;*/
-    /*height: 300px;*/
-/*}*/
-/*.chat-message{*/
-    /*height: 180px;*/
-    /*border-bottom: 2px solid #dddddd;*/
-    /*overflow: auto;*/
-/*}*/
-/*#chat-area input{*/
-    /*margin-top: 10px;*/
-    /*width:95%;*/
-/*}*/
 /*------------------common start------------------*/
+.chat-main-box *{
+    -weblot-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    box-sizing:border-box;
+}
 .hidden{
     display: none;
 }
@@ -122,16 +94,39 @@ label.form-name {
 .chat-item-tab.on{
     background: #999;
 }
+.contact-main-box {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    height: 520px;
+    overflow: hidden;
+    /*transition: height .5s;*/
+}
+.contact-scale-wp {
+    width: 100px;
+    height: 50px;
+    line-height: 50px;
+    background: #5fb878;
+    padding: 0 10px;
+    text-align: center;
+    color: #fff;
+    display: none;
+    cursor: pointer;
+}
+.contact-main-box.scale .contact-scale-wp{
+    display: block;
+}
+.contact-main-box.scale .contact-wp {
+    display: none;
+}
+.contact-main-box.scale{
+    height: 50px;
+}
 
 .contact-wp {
     width: 260px;
     height: 520px;
-    /*bottom: 0;*/
-    right: 20px;
-    box-shadow: 1px 1px 50px rgba(0,0,0,.3);
-    position: absolute;
 }
-
 .contact-tt {
     height: 60px;
     line-height: 60px;
@@ -207,6 +202,16 @@ label.form-name {
 }
 .contact-tt-name {
     display: inline-block;
+}
+.contact-tt-handle{
+    position: absolute;
+    top: 0;
+    right: 10px;
+    line-height: 30px;
+}
+.contact-tt-handle .handle-item {
+    font-size: 30px;
+    line-height: 30px;
 }
 .user-img{
     width: 50px;

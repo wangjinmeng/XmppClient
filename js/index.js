@@ -1,7 +1,7 @@
 $(function(){
     chatMain();
     var loginPopup= util.popup('' +
-        '<div class="chat-tip-box box-shadow">' +
+        '<div class="chat-tip-box box-shadow chat-main-box">' +
         '<div class="chat-tip-tt">登录</div>' +
         '<div class="chat-tip-cont">' +
         '<div class="form-box">' +
