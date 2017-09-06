@@ -317,15 +317,15 @@ var Gab={
                 name+=' <span class="js-tip-msg">等待对方审核</span>';
             }
             var jid_id=Gab.jid_to_id(jid);
-            var htmlStr=' ' +
-                '<div class="contact-list-item js-contact-items offline"  id="'+jid_id+'" data-jid="'+jid+'" data-type="'+subscription+'">'+
-                '   <img class="tt" src="'+tt+'"/>'+
-                '   <span class="name">'+name+'</span>'+
-                '   <span class="del js-del">&times;</span>'+
-                '</div>';
-            var contact=$(htmlStr);
+            // var htmlStr=' ' +
+            //     '<div class="contact-list-item js-contact-items offline"  id="'+jid_id+'" data-jid="'+jid+'" data-type="'+subscription+'">'+
+            //     '   <img class="tt" src="'+tt+'"/>'+
+            //     '   <span class="name">'+name+'</span>'+
+            //     '   <span class="del js-del">&times;</span>'+
+            //     '</div>';
+            // var contact=$(htmlStr);
             if($('#'+jid_id).length==0){
-                $('#js-contact-list').append(Gab.addContactDom());
+                $('#js-contact-list').append(Gab.addContactDom(jid,subscription));
             }
         });
         Gab.connection.send($pres());
