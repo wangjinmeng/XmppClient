@@ -39,6 +39,7 @@ var chatBox={
     $this:null,
     $chatBoxSlider:null,
     popups:null,
+    scrollTimer:null,
     multipleBoxCls:'chat-multiple-box',
     sliderHtmlStr:[
         '<li class="chat-box-slider-item cur js-chat-box-slider-item" data-href="{{jid_id}}" id="{{jid_id}}-nav">',
@@ -133,8 +134,18 @@ var chatBox={
             }
         });
         $dom.append(_msgDom);
-        var height=$dom.height();
-        $dom.parent().scrollTop(height);
+        this.scrollToBottom($dom);
+    },
+    scrollToBottom:function ($dom) {
+        if(this.scrollTimer!=null){
+            clearTimeout(this.scrollTimer);
+        }
+        this.scrollTimer=setTimeout(function () {
+            var height=$dom.height();
+            $dom.parent().stop(true,true).animate({
+                scrollTop:height
+            },600);
+        },100)
     },
     receiveMsg:function(jid_id,full_jid,name,time,msg,composing){
         name=name?name:full_jid;

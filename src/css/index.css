@@ -304,21 +304,20 @@ label.form-name {
     text-overflow: ellipsis;
     line-height: 40px;
     display: inline-block;
+    vertical-align: middle;
 }
 
 .chat-box-slider-item .close{
     display: none;
-    position: absolute;
-    right: 5px;
-    margin-top: 10px;
     color: #fff;
-    font-size: 22px;
+    font-size: 20px;
     border-radius: 100%;
     background: #555;
-    height: 20px;
-    line-height: 20px;
-    width: 20px;
+    height: 1em;
+    line-height: 18px;
+    width: 1em;
     text-align: center;
+    vertical-align: middle;
 }
 .chat-box-slider-item .close:hover{
     background: red;
