@@ -43,7 +43,7 @@
 }
 
 .util-mask-loading:before{
-    content:url('../asset/loading.gif');
+    content:url('./loading.gif');
     position:absolute;
     top:22px;
     left:0;
@@ -162,7 +162,7 @@
 .util-dialog-fullscreen{
     display:inline-block;
     vertical-align:middle;
-    background-image:url('../asset/icon.png');
+    background-image:url('./icon.png');
     background-position:-32px -40px;
     font-size:16px;
     width:16px;
