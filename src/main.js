@@ -3,7 +3,6 @@
  */
 import $ from 'jquery';
 import chatMain from './js/chatMain';
-import utilStyle from './plugin/util/util.css';
 import util from './plugin/util/util';
 import style from './css/index.css';
 var loginPopup= util.popup(
