@@ -24,6 +24,26 @@ var tool={
             .replace('hh',_h)
             .replace('mm',_m)
             .replace('ss',_s)
+    },
+    escapeHtml:function(content){
+        if(content == null){
+            return content;
+        }
+
+        var escapeMap = {
+            "<": "&#60;",
+            ">": "&#62;",
+            '"': "&#34;",
+            "'": "&#39;",
+            "&": "&#38;"
+        };
+
+        return content.toString().replace(/&(?![\w#]+;)|[<>"']/g, function (s) {
+            return escapeMap[s];
+        });
     }
+
 };
+
+
 export default tool;
