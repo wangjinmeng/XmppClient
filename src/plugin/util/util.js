@@ -167,8 +167,12 @@ function toast(options, hostDom){
 
     var $hostDom = $(hostDom);
 
+    var nextId = cacheData.nextId();
+    var toastId = "toast_" + nextId;
     var $toast = $("<div class='util-mask-toast'></div>");
+    $toast.attr("id",toastId);
     $toast.addClass(config.type);
+    $toast.css({zIndex:nextId});
     $toast.html(config.content);
 
     $hostDom.append($toast);
