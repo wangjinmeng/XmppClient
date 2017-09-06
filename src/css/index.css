@@ -43,13 +43,20 @@
 .chat-main-box .hidden{
     display: none;
 }
-.tip-msg{
-    font-size: 14px;
-    line-height: 1em;
-    padding: 1em;
-    background: #dddddd;
+.xmpp-close-btn {
+    position: absolute;
+    /* top: 10px; */
+    right: 10px;
+    font-size: 24px;
+    /* line-height: 1; */
+    color: #666;
+    cursor:pointer;
 }
-.box-shadow{
+
+.xmpp-close-btn:hover {
+    color: #000;
+}
+.xmpp-box-shadow{
     box-shadow: 1px 1px 50px rgba(0,0,0,.3);
 }
 input.form-input {
@@ -135,7 +142,6 @@ label.form-name {
     bottom: 20px;
     right: 50px;
     height: 520px;
-    overflow: hidden;
     /*transition: height .5s;*/
 }
 .contact-scale-wp {
@@ -148,15 +154,9 @@ label.form-name {
     color: #fff;
     display: none;
     cursor: pointer;
-}
-.contact-main-box.scale .contact-scale-wp{
-    display: block;
-}
-.contact-main-box.scale .contact-wp {
-    display: none;
-}
-.contact-main-box.scale{
-    height: 50px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 .contact-wp {
@@ -171,7 +171,6 @@ label.form-name {
     background: #ddd;
     cursor: move;
 }
-
 .contact-cont {
     overflow: hidden;
     height: 460px;
@@ -472,12 +471,6 @@ label.form-name {
     font-size: 15px;
     padding-top: 10px;
 }
-/*.box-chat-textarea:focus{*/
-    /*border-color: #66afe9;*/
-    /*outline: 0;*/
-    /*-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);*/
-    /*box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);*/
-/*}*/
 .box-chat-bottom{
     float: right;
     margin-right: 15px;
@@ -538,4 +531,72 @@ label.form-name {
     padding:0.5em 1em;
     text-align: center;
     cursor: pointer;
+}
+.xmpp-shake-animate
+{
+    animation:xmpp-shake .5s;
+    -moz-animation:xmpp-shake .5s; /* Firefox */
+    -webkit-animation:xmpp-shake .5s; /* Safari and Chrome */
+    -o-animation:xmpp-shake .5s; /* Opera */
+}
+@keyframes xmpp-shake
+{
+    0%, 100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        -webkit-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        -webkit-transform: translateX(10px);
+        transform: translateX(10px);
+    }
+}
+
+@-moz-keyframes xmpp-shake
+{
+    0%, 100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        -webkit-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        -webkit-transform: translateX(10px);
+        transform: translateX(10px);
+    }
+}
+@-webkit-keyframes  xmpp-shake
+{
+    0%, 100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        -webkit-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        -webkit-transform: translateX(10px);
+        transform: translateX(10px);
+    }
+}
+@-o-keyframes  xmpp-shake
+{
+    0%, 100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        -webkit-transform: translateX(-10px);
+        transform: translateX(-10px);
+    }
+    20%, 40%, 60%, 80% {
+        -webkit-transform: translateX(10px);
+        transform: translateX(10px);
+    }
 }
