@@ -113,6 +113,7 @@ function showLoading(msg, hostDom){
     $msg.html(msg);
     $loading.append($msg);
     var operation = popup({
+        overlay:true,
         content:$loading
     }, hostDom);
 
