@@ -7,7 +7,7 @@
 import './util.css';
 
 const cacheData = {
-    _cacheId:100,
+    _cacheId:1000,
     loadingSequence:[],
     popupSequence:[],
     nextId:function(prefix){
@@ -49,10 +49,10 @@ function createMask(options, hostDom){
     var maskId = "mask_" + nextId;
     var $maskContainer = $("<div class='util-mask-container'></div>");
     $maskContainer.attr("id", maskId);
-    $maskContainer.css({zIndex:nextId});//累加到最大索引
 
     if(config.overlay){
         $maskContainer.addClass("overlay");
+        $maskContainer.css({zIndex:nextId});//累加到最大索引
         var $maskOverlay = $("<div class='util-mask-overlay'></div>");
         $maskContainer.append($maskOverlay);
     }
@@ -60,6 +60,7 @@ function createMask(options, hostDom){
     var $maskContent = $("<div class='util-mask-content'></div>");
     $maskContent.html(config.content);
     $maskContainer.append($maskContent);
+    $maskContent.css({zIndex:nextId});//累加到最大索引
 
     $hostDom.append($maskContainer);
 
