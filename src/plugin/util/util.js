@@ -112,14 +112,13 @@ function showLoading(msg, hostDom){
     var $msg = $("<div class='util-mask-loading-msg'></div>");
     $msg.html(msg);
     $loading.append($msg);
-    var operation = createMask({
+    var operation = popup({
         content:$loading
     }, hostDom);
 
-    cacheData.loadingSequence.push(operation.id);
+    cacheData.loadingSequence.push(operation.getId());
 
     operation.open();
-    operation.active();
 
     return operation;
 
@@ -190,9 +189,7 @@ function initMoveAble(target, container, restrictBound){
 
     var $win = $(window);
 
-    var $target = $container.find(target);
-
-    $target.off("mousedown" + namespace).on("mousedown" + namespace, function(evt){
+    var handler = function(evt){
         //全屏模式，禁止移动
         if($container.hasClass("full-expand")){
             return false;
@@ -234,7 +231,18 @@ function initMoveAble(target, container, restrictBound){
 
         });
 
-    });
+    };
+
+
+    if(typeof target == "string"){
+        $container.off("mousedown" + namespace).on("mousedown" + namespace, target, handler );
+    }else{
+        var $target = $container.find(target);
+        $target.off("mousedown" + namespace).on("mousedown" + namespace, handler );
+    }
+
+
+
 
     $win.off("mouseup" + namespace).on("mouseup" + namespace, function(evt){
         $win.off("mousemove" + namespace);
@@ -336,6 +344,9 @@ function popup(options, hostDom){
 
     var operation = {
         originalOperation:{},
+        getId:function(){
+            return this.originalOperation.id;
+        },
         getContent:function(){
           return this.originalOperation.content;
         },

@@ -41,15 +41,9 @@
 }
 
 .util-mask-loading{
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
     margin:auto;
     height:90px;
     width:90px;
-    max-width:80%;
     background-color:rgba(0,0,0,0.6);
     border-radius:8px;
     color:white;
