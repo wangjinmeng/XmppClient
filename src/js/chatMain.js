@@ -8,11 +8,11 @@ import qq from '../img/qq.jpg';
 import tt from '../img/tt.jpg';
 import tool from './tool';
 var $node=$([
-    '<div id="main-panel" class="hidden chat-main-box  box-shadow contact-main-box">',
-    '        <div class="contact-scale-wp  js-handle-scale">',
+    '<div id="main-panel" class="hidden chat-main-box  xmpp-box-shadow contact-main-box">',
+    '        <div class="contact-scale-wp  js-xmpp-chat-panel-toggle-status" id="js-xmpp-chat-status" >',
     '           <span class="js-name"></span>',
     '        </div>',
-    '        <div class="contact-wp">',
+    '        <div class="contact-wp" id="js-xmpp-chat-panel">',
     '            <div class="contact-tt" popup-header>',
     '                <div class="contact-tt-name js-name">-_-</div>',
     '                <select name="" id="js-change-status" class="contact-tt-status ">',
@@ -21,7 +21,7 @@ var $node=$([
     '                    <option value="away">离开</option>',
     '                </select>',
     '                <div class="contact-tt-handle">',
-    '                   <a class="handle-item js-handle-scale">&times;</a>',
+    '                   <a class="handle-item  js-xmpp-chat-panel-toggle-status">&times;</a>',
     '                </div>',
     '            </div>',
     '            <div class="contact-cont">',
@@ -35,6 +35,7 @@ var $node=$([
 var flagMap={
     init:false
 };
+var jqueryMap={};
 //表单输入值事件:inputKeyPress; 1:按键按下，2:发送
 //查找聊天记录事件：queryHistory; jid:裸jid
 var chatBox={
@@ -209,7 +210,7 @@ var chatBox={
     },
     init:function(){
         var node=$('' +
-            '<div class="chat-box pr chat-main-box box-shadow" id="js-chat-box">' +
+            '<div class="chat-box pr chat-main-box xmpp-box-shadow" id="js-chat-box">' +
             '<ul class="chat-box-slider" id="js-chat-box-slider"> </ul>' +
             '</div>');
         var _this=this;
@@ -326,7 +327,7 @@ var Gab={
         var fromBareJid=Strophe.getBareJidFromJid(from);
         if(fromBareJid===Strophe.getBareJidFromJid(myJid)){
             if(pType=='unavailable'){
-                console.log('您已掉线，请重新登录')
+                util.toast('您已掉线，请重新登录')
             }
             return true;
         }
@@ -335,7 +336,7 @@ var Gab={
                 Gab.contactList.push(fromBareJid);
                 Gab.pending_subscriber=fromBareJid;
                 Gab.approvePopups=util.popup(
-                    '<div class="chat-tip-box box-shadow">' +
+                    '<div class="chat-tip-box xmpp-box-shadow">' +
                     '<div class="chat-tip-tt">好友请求</div>' +
                     '<div class="chat-tip-cont">' +
                     Strophe.getNodeFromJid(fromBareJid)+'请求加你为好友' +
@@ -359,7 +360,7 @@ var Gab={
             }
             var dataType=$('#'+Gab.jid_to_id(fromBareJid)).attr('data-type');
             if(dataType=='none'){
-                Gab.tipMsg(Strophe.getNodeFromJid(from)+'通过了您的好友申请');
+                util.toast(Strophe.getNodeFromJid(from)+'通过了您的好友申请');
                 $('#'+Gab.jid_to_id(fromBareJid)).find('.js-tip-msg').remove();
             }
         }else if(pType==='unsubscribed'){
@@ -367,7 +368,7 @@ var Gab={
             if(arrIndex!=-1){
                 Gab.contactList.splice(arrIndex, 1);
             }
-            Gab.tipMsg(Strophe.getNodeFromJid(from)+'拒绝了您的好友申请');
+            util.toast(Strophe.getNodeFromJid(from)+'拒绝了您的好友申请');
             $('#'+Gab.jid_to_id(fromBareJid)).remove();
         }else if(pType!=='error'){
             var contact=$('#'+Gab.jid_to_id(from))
@@ -377,6 +378,7 @@ var Gab={
             if(pType=='unavailable'){
                 contact.addClass('offline');
             }else{
+
                 var show=$pre.find('show').text();
                 if(show===''||show==='chat'){
                     contact.addClass('online');
@@ -399,8 +401,8 @@ var Gab={
         var composing=_$msg.find('composing').length;
         var msg=_$msg.find('body').text();
         var time=tool.dealTime(new Date());
-        util.toast('收到的'+ name +'发来新消息');
         if(msg){
+            util.toast('收到的'+ name +'发来新消息');
             Gab.storeMsg.push(jid,{
                 type:'receive',
                 msg:msg,
@@ -449,17 +451,18 @@ var Gab={
             }
         });
         return true;
-    },
-    tipMsg:function (str){
-        var tipMsg='<span class="tip-msg" style="top: 20px;">'+str+'</span>';
-        var _popup=util.popup(tipMsg);
-        _popup.open();
-        setTimeout( _popup.close,1500)
     }
 };
+function initJqueryMap(){
+    jqueryMap={
+        $chatStatus:$node.find('#js-xmpp-chat-status'),
+        $chatPanel:$node.find('#js-xmpp-chat-panel')
+    }
+}
 function init(){
     if(flagMap.init)return;
     flagMap.init=true;
+    initJqueryMap();
     $(document).on('click','#js-approve-btn-close',function () {
         Gab.connection.send($pres({
             to:Gab.pending_subscriber,
@@ -502,7 +505,7 @@ function init(){
     $(document).on('click','#js-add-contact',function(){
         if(!Gab.addContactPopups){
             Gab.addContactPopups=util.popup('' +
-                '<div class="chat-tip-box box-shadow">' +
+                '<div class="chat-tip-box xmpp-box-shadow">' +
                 '<div class="chat-tip-tt">添加好友</div>' +
                 '<div class="chat-tip-cont">' +
                 '<div class="form-box">' +
@@ -540,8 +543,9 @@ function init(){
         $(document).trigger('contact_del',{jid:jid});
         return false;
     });
-    $(document).on('click','.js-handle-scale',function () {
-        $node.toggleClass('scale');
+    $(document).on('click','.js-xmpp-chat-panel-toggle-status',function(){
+        jqueryMap.$chatPanel.fadeToggle();
+        jqueryMap.$chatStatus.slideToggle();
     });
     $(document).bind('connected',function(){
         $('body').append($node);
@@ -594,7 +598,7 @@ function init(){
         Gab.connection.sendIQ(iq);
         var subscribe=$pres({to:data.jid,'type':'subscribe'});
         Gab.connection.send(subscribe);
-        Gab.tipMsg('发送成功,等待对方确认');
+        util.toast('发送成功,等待对方确认');
     });
     $(document).bind('contact_del',function (ev,data) {
         var arrIndex=$.inArray(data.jid,Gab.contactList);
@@ -607,7 +611,7 @@ function init(){
         });
         Gab.connection.sendIQ(iq,function(d){
             $('#'+Gab.jid_to_id(data.jid)).remove();
-            Gab.tipMsg('已删除');
+            util.toast('已删除');
         });
     });
 }
