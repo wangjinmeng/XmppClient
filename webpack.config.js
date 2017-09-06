@@ -1,14 +1,25 @@
 /**
  * Created by Administrator on 2017/9/5.
  */
+
+var CleanWebpackPlugin = require("clean-webpack-plugin");
+
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+
+var publicPath = "";
+//注意配置的变量值是否有空白字符
+if(process.env.NODE_ENV == "production"){
+    publicPath = "//192.168.3.28/im/";
+}
+
+
 module.exports = {
     entry: __dirname+"/src/main.js",
     devtool:"eval-source-map",
     output: {
         path: __dirname+'/dist',
         filename: "index.js",
-        // publicPath:"//192.168.3.28/im/"
+        publicPath:publicPath
     },
     module: {
         loaders:[
@@ -39,9 +50,16 @@ module.exports = {
             }
         ]
     },
-    plugins: [new HtmlWebpackPlugin({
-        template:'./src/index.html'
-    })],
+    plugins: [
+        new CleanWebpackPlugin(["dist/*"], {
+            root:__dirname,
+            verbose:true,
+            dry:false
+        }),
+        new HtmlWebpackPlugin({
+            template:'./src/index.html'
+        })
+    ],
     externals:{
         jquery:"window.jQuery"
     }
