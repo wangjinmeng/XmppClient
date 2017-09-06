@@ -263,10 +263,7 @@ label.form-name {
     width: 100%;
 }
 .chat-box{
-    position: absolute;
-    z-index: 19891068;
     width: 600px;
-    left: 28px;
     background-image: url(../img/bg.jpg);
     background-color: #fff;
     background-size: cover;
@@ -500,6 +497,7 @@ label.form-name {
 .chat-tip-box {
     width: 300px;
     background: #fff;
+    height:100%;
 }
 
 .chat-tip-tt {
