@@ -44,18 +44,15 @@
     display: none;
 }
 .xmpp-close-btn {
-    position: absolute;
-    /* top: 10px; */
-    right: 10px;
-    font-size: 24px;
-    /* line-height: 1; */
+    font-size: 100%;
+    line-height: 1;
     color: #666;
     cursor:pointer;
 }
-
 .xmpp-close-btn:hover {
     color: #000;
 }
+
 .xmpp-box-shadow{
     box-shadow: 1px 1px 50px rgba(0,0,0,.3);
 }
@@ -85,6 +82,14 @@ label.form-name {
     cursor: pointer;
     display: inline-block;
     padding: 0 1em;
+    font-size: 16px;
+}
+.xmpp-button:hover{
+    opacity: 0.9;
+}
+.xmpp-button:active{
+    -webkit-box-shadow: inset 0 3px 10px rgba(0,0,0,.3);
+    box-shadow: inset 0 3px 10px rgba(0,0,0,.3);
 }
 .xmpp-button.xmpp-button-main{
     background: #5fb878;
@@ -138,27 +143,9 @@ label.form-name {
     background: #999;
 }
 .contact-main-box {
-    position: fixed;
-    bottom: 20px;
-    right: 50px;
-    height: 520px;
-    /*transition: height .5s;*/
+    position: relative;
+    right:50px;
 }
-.contact-scale-wp {
-    width: 100px;
-    height: 50px;
-    line-height: 50px;
-    background: #5fb878;
-    padding: 0 10px;
-    text-align: center;
-    color: #fff;
-    display: none;
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-}
-
 .contact-wp {
     width: 260px;
     height: 520px;
@@ -169,7 +156,6 @@ label.form-name {
     line-height: 60px;
     padding-left: 20px;
     background: #ddd;
-    cursor: move;
 }
 .contact-cont {
     overflow: hidden;
@@ -243,11 +229,7 @@ label.form-name {
     top: 0;
     right: 10px;
     line-height: 30px;
-}
-.contact-tt-handle .handle-item {
-    font-size: 30px;
-    line-height: 30px;
-    cursor: pointer;
+    font-size: 24px;
 }
 .user-img{
     width: 50px;
@@ -505,8 +487,13 @@ label.form-name {
     line-height: 38px;
     padding: 0 15px;
     font-size: 14px;
+    cursor: move;
 }
-
+.chat-tip-tt-handle{
+    position: absolute;
+    right: 10px;
+    font-size: 20px;
+}
 .chat-tip-cont {
     padding: 15px;
 }

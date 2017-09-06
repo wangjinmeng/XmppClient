@@ -4,11 +4,11 @@
 import $ from 'jquery';
 import chatMain from './js/chatMain';
 import util from './plugin/util/util';
-import style from './css/index.css';
+import './css/index.css';
 var loginPopup= util.popup(
     '<div class="chat-tip-box xmpp-box-shadow chat-main-box">' +
-    '<div class="chat-tip-tt">登录' +
-    '<span class="xmpp-close-btn" id="js-xmpp-tip-box-close">&times;</span>' +
+    '<div class="chat-tip-tt" popup-header>登录' +
+    '<a class="chat-tip-tt-handle"><span class="xmpp-close-btn" id="js-xmpp-tip-box-close">&times;</span></a>' +
     '</div>' +
     '<div class="chat-tip-cont">' +
     '<div class="form-box">' +
@@ -20,16 +20,23 @@ var loginPopup= util.popup(
     '<a id="js-xmpp-login" class="xmpp-button xmpp-button-main chat-tip-btn ">确定</a>'+
     '</div>'+
     '</div>');
-var $initNode=$('<span class="xmpp-contact-us xmpp-shake-animate">联系我们</span>');
+var $initNode=$('<span class="xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">联系我们</span>');
 $(document).on('click',"#js-xmpp-login",function(){
+    var _jid=$.trim($('#js-jid').val());
+    var _password=$.trim($('#js-password').val());
+    if(!_jid||!_password){
+        util.toast('请填写完整');
+        return
+    }
     util.showLoading();
     chatMain.login({
-        jid:$('#js-jid').val(),
-        password:$('#js-password').val()
+        jid:_jid,
+        password:_password
     },function(){
         util.hideLoading();
         loginPopup.close();
-        $initNode.remove();
+        $initNode.off('click.open-login');
+        $('#js-xmpp-chat-thumb').html('即时通讯');
     },function(){
         util.hideLoading();
     })
@@ -38,8 +45,9 @@ $(document).on('click',"#js-xmpp-tip-box-close",function(){
     loginPopup.hide();
     $initNode.show();
 });
-$initNode.on('click',function () {
+$initNode.on('click.open-login',function () {
     loginPopup.open();
     $initNode.hide();
 });
 $('body').append($initNode);
+window.util=util

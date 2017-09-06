@@ -8,11 +8,8 @@ import qq from '../img/qq.jpg';
 import tt from '../img/tt.jpg';
 import tool from './tool';
 var $node=$([
-    '<div id="main-panel" class="hidden chat-main-box  xmpp-box-shadow contact-main-box">',
-    '        <div class="contact-scale-wp  js-xmpp-chat-panel-toggle-status" id="js-xmpp-chat-status" >',
-    '           <span class="js-name"></span>',
-    '        </div>',
-    '        <div class="contact-wp" id="js-xmpp-chat-panel">',
+    '<div id="main-panel" class="chat-main-box contact-main-box">',
+    '        <div class=" xmpp-box-shadow contact-wp" id="js-xmpp-chat-panel">',
     '            <div class="contact-tt" popup-header>',
     '                <div class="contact-tt-name js-name">-_-</div>',
     '                <select name="" id="js-change-status" class="contact-tt-status ">',
@@ -21,7 +18,7 @@ var $node=$([
     '                    <option value="away">离开</option>',
     '                </select>',
     '                <div class="contact-tt-handle">',
-    '                   <a class="handle-item  js-xmpp-chat-panel-toggle-status">&times;</a>',
+    '                   <a class="xmpp-close-btn  js-xmpp-chat-panel-toggle-status">&times;</a>',
     '                </div>',
     '            </div>',
     '            <div class="contact-cont">',
@@ -76,7 +73,7 @@ var chatBox={
         '        </div>',
         '    </div>',
         '    <div class="box-handle">',
-        '        <a class="js-close-msg-box cursor-pointer">&times;</a>',
+        '        <a class="js-close-msg-box xmpp-close-btn">&times;</a>',
         '    </div>',
         '</div>'
     ].join(""),
@@ -291,6 +288,20 @@ var Gab={
             return JSON.parse(msg);
         }
     },
+    addContactDom:function(jid,sub){
+        var name=Strophe.getNodeFromJid(jid);
+        var jid_id=Gab.jid_to_id(jid);
+        if(sub=='none'){
+            name+=' <span class="js-tip-msg">等待对方审核</span>';
+        }
+        var resHtml= ' ' +
+            '<div class="contact-list-item js-contact-items offline"  id="'+jid_id+'" data-jid="'+jid+'"  data-type="'+sub+'">'+
+            '   <img class="tt" src="'+tt+'"/>'+
+            '   <span class="name">'+name+'</span>'+
+            '   <span class="del js-del">&times;</span>'+
+            '</div>';
+        return resHtml
+    },
     on_roster:function (iq) {
         $(iq).find('item').each(function () {
             var $this=$(this);
@@ -314,7 +325,7 @@ var Gab={
                 '</div>';
             var contact=$(htmlStr);
             if($('#'+jid_id).length==0){
-                $('#js-contact-list').append(contact);
+                $('#js-contact-list').append(Gab.addContactDom());
             }
         });
         Gab.connection.send($pres());
@@ -337,7 +348,7 @@ var Gab={
                 Gab.pending_subscriber=fromBareJid;
                 Gab.approvePopups=util.popup(
                     '<div class="chat-tip-box xmpp-box-shadow">' +
-                    '<div class="chat-tip-tt">好友请求</div>' +
+                    '<div class="chat-tip-tt" popup-header>好友请求</div>' +
                     '<div class="chat-tip-cont">' +
                     Strophe.getNodeFromJid(fromBareJid)+'请求加你为好友' +
                     '</div>' +
@@ -437,16 +448,7 @@ var Gab={
                     arrIndex.push(bareJid);
                 }
                 if($('#'+jid_id).length==0){
-                    if(sub=='none'){
-                        name+=' <span class="js-tip-msg">等待对方审核</span>';
-                    }
-                    var contact_html=' ' +
-                        '<div class="contact-list-item js-contact-items offline"  id="'+jid_id+'" data-jid="'+jid+'"  data-type="'+sub+'">'+
-                        '   <img class="tt" src="'+tt+'"/>'+
-                        '   <span class="name">'+name+'</span>'+
-                        '   <span class="del js-del">&times;</span>'+
-                        '</div>';
-                    $('#js-contact-list').append(contact_html);
+                    $('#js-contact-list').append(Gab.addContactDom(jid,sub));
                 }
             }
         });
@@ -455,8 +457,9 @@ var Gab={
 };
 function initJqueryMap(){
     jqueryMap={
-        $chatStatus:$node.find('#js-xmpp-chat-status'),
-        $chatPanel:$node.find('#js-xmpp-chat-panel')
+        $chatPanel:$node.find('#js-xmpp-chat-panel'),
+        $togglePanelStatus:$node.find('.js-xmpp-chat-panel-toggle-status'),
+        $changeStatus:$node.find('#js-change-status'),
     }
 }
 function init(){
@@ -488,25 +491,13 @@ function init(){
         var _jid_id=Gab.jid_to_id(_jid);
         chatBox.add(_jid_id,_jid,Strophe.getNodeFromJid(_jid));
     });
-    $(document).on('change','#js-change-status',function(){
-        var val=$(this).val();
-        var _pre;
-        if(val=='online'){
-            _pre=$pres()
-        }else if(val=='offline'){
-            _pre=$pres({
-                type:'unavailable'
-            })
-        }else if(val=='away'){
-            _pre=$pres().c('show').t('away')
-        }
-        Gab.connection.send(_pre);
-    });
     $(document).on('click','#js-add-contact',function(){
         if(!Gab.addContactPopups){
             Gab.addContactPopups=util.popup('' +
                 '<div class="chat-tip-box xmpp-box-shadow">' +
-                '<div class="chat-tip-tt">添加好友</div>' +
+                '<div class="chat-tip-tt" popup-header>添加好友' +
+                '<a id="js-add-contact-btn-close" class="chat-tip-tt-handle"><span class="xmpp-close-btn">&times;</span></a>' +
+                '</div>' +
                 '<div class="chat-tip-cont">' +
                 '<div class="form-box">' +
                 '    <label class="form-name">名称</label>'+
@@ -515,7 +506,6 @@ function init(){
                 '</div>' +
                 '<div class="chat-tip-handle">' +
                 '<a id="js-add-contact-btn-submit" class="xmpp-button xmpp-button-main chat-tip-btn ">确定</a>'+
-                '<a id="js-add-contact-btn-close"  class="xmpp-button xmpp-button-default  chat-tip-btn ">关闭</a>'+
                 '</div>'+
                 '</div>' );
         }
@@ -543,12 +533,34 @@ function init(){
         $(document).trigger('contact_del',{jid:jid});
         return false;
     });
-    $(document).on('click','.js-xmpp-chat-panel-toggle-status',function(){
-        jqueryMap.$chatPanel.fadeToggle();
-        jqueryMap.$chatStatus.slideToggle();
+    jqueryMap.$changeStatus.on('change',function(){
+        var val=$(this).val();
+        var _pre;
+        if(val=='online'){
+            _pre=$pres()
+        }else if(val=='offline'){
+            _pre=$pres({
+                type:'unavailable'
+            })
+        }else if(val=='away'){
+            _pre=$pres().c('show').t('away')
+        }
+        Gab.connection.send(_pre);
+    });
+    jqueryMap.$togglePanelStatus.on('click',function(){
+        jqueryMap.$chatPanel.fadeToggle('fast');
+        $('#js-xmpp-chat-thumb').show();
+    });
+    $('#js-xmpp-chat-thumb').on('click',function(){
+        jqueryMap.$chatPanel.fadeToggle('fast');
+        $('#js-xmpp-chat-thumb').hide();
     });
     $(document).bind('connected',function(){
-        $('body').append($node);
+        // $('body').append($node);
+        util.popup({
+            content:$node,
+            position:'bottom right'
+        }).open();
         util.toast('登录成功');
         chatBox.init();
         chatBox.subscribeEvent('inputKeyPress',function (ev,data) {
@@ -577,7 +589,6 @@ function init(){
         chatBox.subscribeEvent('queryHistory',function (ev,data) {
             chatBox.receiveHistory(Gab.jid_to_id(data.jid),Gab.storeMsg.get(data.jid));
         });
-        $('#main-panel').removeClass('hidden');
         $('#main-panel').find('.js-name').text(Strophe.getNodeFromJid(Gab.connection.jid));
         var iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         Gab.connection.sendIQ(iq,Gab.on_roster);
@@ -601,6 +612,7 @@ function init(){
         util.toast('发送成功,等待对方确认');
     });
     $(document).bind('contact_del',function (ev,data) {
+        debugger
         var arrIndex=$.inArray(data.jid,Gab.contactList);
         if(arrIndex!=-1){
             Gab.contactList.splice(arrIndex,1)
