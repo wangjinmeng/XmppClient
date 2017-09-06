@@ -423,6 +423,13 @@ label.form-name {
     right: -1em;
     left: auto;
 }
+
+.box-chat-mine .box-char-info .msg img{
+    max-width:100%;
+    max-height:260px;
+}
+
+
 .box-chat-footer{
     /*height: 200px;*/
     border-top: 1px solid #ddd;
