@@ -20,7 +20,7 @@ var loginPopup= util.popup(
     '<a id="js-xmpp-login" class="xmpp-button xmpp-button-main chat-tip-btn ">确定</a>'+
     '</div>'+
     '</div>');
-var $initNode=$('<span class="xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">联系我们</span>');
+var $initNode=$('<span class="xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 $(document).on('click',"#js-xmpp-login",function(){
     var _jid=$.trim($('#js-jid').val());
     var _password=$.trim($('#js-password').val());
@@ -36,7 +36,6 @@ $(document).on('click',"#js-xmpp-login",function(){
         util.hideLoading();
         loginPopup.close();
         $initNode.off('click.open-login');
-        $('#js-xmpp-chat-thumb').html('即时通讯');
     },function(){
         util.hideLoading();
     })
@@ -50,4 +49,3 @@ $initNode.on('click.open-login',function () {
     $initNode.hide();
 });
 $('body').append($initNode);
-window.util=util
