@@ -7,15 +7,18 @@ var CleanWebpackPlugin = require("clean-webpack-plugin");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var publicPath = "";
+var devtool = "eval-source-map";
+
 //注意配置的变量值是否有空白字符
 if(process.env.NODE_ENV == "production"){
     publicPath = "//192.168.3.28/im/";
+    devtool = "";
 }
 
 
 module.exports = {
     entry: __dirname+"/src/main.js",
-    devtool:"eval-source-map",
+    devtool:devtool,
     output: {
         path: __dirname+'/dist',
         filename: "index.js",
@@ -25,7 +28,7 @@ module.exports = {
         loaders:[
             {
                 test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ]
+                use: [ 'style-loader', 'css-loader?minimize=false' ]
             },
             {
                 test:/\.js$/,
