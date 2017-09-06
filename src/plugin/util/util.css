@@ -10,6 +10,7 @@
 
 .util-mask-container.overlay{
     position:fixed;
+    z-index:999;
     top:0;
     bottom:0;
     left:0;
@@ -26,6 +27,18 @@
     background-color:rgba(0,0,0,0.4);
 }
 
+.util-mask-content{
+    position:fixed;
+    z-index:999;
+    max-width:90%;
+    max-height:90%;
+}
+
+.util-mask-content [popup-header]{
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
 
 .util-mask-loading{
     position:absolute;
@@ -66,16 +79,8 @@
 
 
 
-.util-mask-container.active .util-mask-loading{
-    -webkit-animation-fill-mode:both;
-    animation-fill-mode:both;
-    -webkit-animation:bounceIn 200ms;
-    animation:bounceIn 200ms;
-}
-
-
 .util-mask-toast{
-    position:absolute;
+    position:fixed;
     left:0;
     right:0;
     bottom:40px;
@@ -104,38 +109,15 @@
     background-color:rgba(189,94,47,0.8);
 }
 
-.util-mask-toast.active{
-    -webkit-animation-fill-mode:both;
-    animation-fill-mode:both;
-    -webkit-animation:fadeIn 200ms;
-    animation:fadeIn 200ms;
-}
-
-.util-mask-toast.deactive{
-    -webkit-animation-fill-mode:both;
-    animation-fill-mode:both;
-    -webkit-animation:shirt 200ms;
-    animation:bounceOut 200ms;
-}
 
 /**对话框**/
 .util-dialog{
-    position:absolute;
-    max-width:90%;
-    max-height:90%;
     margin:auto;
     overflow:auto;
     background-color:#fff;
     border:solid 1px #ddd;
     box-shadow:0px 0px 8px #666;
     border-radius:4px;
-}
-
-.util-mask-container.active .util-dialog{
-    -webkit-animation-fill-mode:both;
-    animation-fill-mode:both;
-    -webkit-animation:bounceIn 200ms;
-    animation:bounceIn 200ms;
 }
 
 
@@ -183,6 +165,7 @@
     height:18px;
     line-height:18px;
     color:#555;
+    text-decoration:none;
 }
 
 .util-dialog-close:hover{
@@ -225,6 +208,7 @@
     text-align:center;
     padding:0px 20px;
     margin-right:20px;
+    text-decoration:none;
 }
 
 
@@ -247,133 +231,40 @@
     background-color: #0b80d9;
 }
 
-/***full**/
-.full-expand,.util-dialog.full-expand{
-    max-width:none;
-    max-height:none;
-    width:100% !important;
-    height:100% !important;
-    top:0px !important;
-    left:0px !important;
-    -webkit-transition:all 300ms;
-    transition:all 300ms;
-    -webkit-box-sizing:border-box;
-    box-sizing:border-box;
-
-}
-
-
-.util-dialog.full-expand .util-dialog-content{
-    position:absolute;
-    top:42px;
-    bottom:42px;
-    left:0;
-    right:0;
-    margin:auto;
-}
-
-
-.util-dialog.full-expand .util-dialog-header{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    margin:auto;
-}
-
-
-.util-dialog.full .util-dialog-footer{
-    position:absolute;
-    bottom:0;
-    left:0;
-    right:0;
-    margin:auto;
-}
-
-
-.min-collapse{
-    display:none;
-}
-
-
 
 /***animate***/
-@-webkit-keyframes fadeIn{
-    from {
-        opacity:0;
-    }
 
-    to {
-        opacity:1
 
-    }
-
+.xmpp-util-active {
+    -webkit-animation: xmppBounce 1000ms linear both;
+    animation: xmppBounce 1000ms linear both;
 }
 
-@keyframes fadeIn{
-    from {
-        opacity:0;
-    }
+/* Generated with Bounce.js. Edit at https://goo.gl/wucUja */
 
-    to {
-        opacity:1
-
-    }
-
+@-webkit-keyframes xmppBounce {
+    0% { -webkit-transform: matrix3d(0.4, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.4, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    4.3% { -webkit-transform: matrix3d(0.709, 0, 0, 0, 0, 0.709, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.709, 0, 0, 0, 0, 0.709, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    8.61% { -webkit-transform: matrix3d(0.927, 0, 0, 0, 0, 0.927, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.927, 0, 0, 0, 0, 0.927, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    12.91% { -webkit-transform: matrix3d(1.031, 0, 0, 0, 0, 1.031, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.031, 0, 0, 0, 0, 1.031, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    17.22% { -webkit-transform: matrix3d(1.056, 0, 0, 0, 0, 1.056, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.056, 0, 0, 0, 0, 1.056, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    28.33% { -webkit-transform: matrix3d(1.012, 0, 0, 0, 0, 1.012, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.012, 0, 0, 0, 0, 1.012, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    39.44% { -webkit-transform: matrix3d(0.996, 0, 0, 0, 0, 0.996, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.996, 0, 0, 0, 0, 0.996, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    61.66% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    83.98% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    100% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
 }
 
-@-webkit-keyframes bounceIn{
-    from {
-        -webkit-transform:scale(0.1,0.1);
-        opacity:0;
-    }
-
-    to {
-        -webkit-transform:scale(1,1);
-        opacity:1;
-
-    }
-
+@keyframes xmppBounce {
+    0% { -webkit-transform: matrix3d(0.4, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.4, 0, 0, 0, 0, 0.4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    4.3% { -webkit-transform: matrix3d(0.709, 0, 0, 0, 0, 0.709, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.709, 0, 0, 0, 0, 0.709, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    8.61% { -webkit-transform: matrix3d(0.927, 0, 0, 0, 0, 0.927, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.927, 0, 0, 0, 0, 0.927, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    12.91% { -webkit-transform: matrix3d(1.031, 0, 0, 0, 0, 1.031, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.031, 0, 0, 0, 0, 1.031, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    17.22% { -webkit-transform: matrix3d(1.056, 0, 0, 0, 0, 1.056, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.056, 0, 0, 0, 0, 1.056, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    28.33% { -webkit-transform: matrix3d(1.012, 0, 0, 0, 0, 1.012, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1.012, 0, 0, 0, 0, 1.012, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    39.44% { -webkit-transform: matrix3d(0.996, 0, 0, 0, 0, 0.996, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(0.996, 0, 0, 0, 0, 0.996, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    61.66% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    83.98% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+    100% { -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
 }
 
-@keyframes bounceIn{
-    from {
-        transform:scale(0.1,0.1);
-        opacity:0;
-    }
-
-    to {
-        transform:scale(1,1);
-        opacity:1;
-
-    }
-
-}
-
-@-webkit-keyframes bounceOut{
-    from {
-        -webkit-transform:scale(1,1);
-        opacity:1;
-    }
-
-    to {
-        -webkit-transform:scale(1.4,1.4);
-        opacity:0;
-
-    }
-
-}
-
-@keyframes bounceOut{
-    from {
-        transform:scale(1,1);
-        opacity:1;
-    }
-
-    to {
-        transform:scale(1.4,1.4);
-        opacity:0;
-
-    }
-
-}

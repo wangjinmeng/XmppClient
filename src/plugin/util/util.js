@@ -3,6 +3,9 @@
 * 提供通用的界面操作功能
 *
 */
+
+import './util.css';
+
 const cacheData = {
     _cacheId:100,
     loadingSequence:[],
@@ -12,7 +15,9 @@ const cacheData = {
         return $.trim(prefix) + this._cacheId;
     }
 };
+
 const maskCacheName = "cache-maskOp";
+
 /**
  * 创建遮罩骨架
  * @param content
@@ -52,20 +57,25 @@ function createMask(options, hostDom){
         $maskContainer.append($maskOverlay);
     }
 
-
-    $maskContainer.append(config.content);
+    var $maskContent = $("<div class='util-mask-content'></div>");
+    $maskContent.html(config.content);
+    $maskContainer.append($maskContent);
 
     $hostDom.append($maskContainer);
 
     var operation = {
         id:maskId,
         dom:$maskContainer,
+        content:$maskContent,
         active:function(){
-            this.dom.addClass("active");
+            $maskContent.addClass("xmpp-util-active");
             return this;
         },
-        deactive:function(){
-            this.dom.removeClass("active");
+        deactive:function(callback){
+            var isCall = false;
+            $maskContent.removeClass("xmpp-util-active");
+            callback && callback();
+
             return this;
         },
         open:function(){
@@ -77,8 +87,9 @@ function createMask(options, hostDom){
             this.dom.remove();
             return this;
         },
-        hide:function(){
+        hide:function(callBack){
             this.dom.hide();
+
         }
     };
 
@@ -113,6 +124,8 @@ function showLoading(msg, hostDom){
     return operation;
 
 }
+
+
 function hideLoading(){
     var id = cacheData.loadingSequence.pop();
     if(id != null){
@@ -124,6 +137,7 @@ function hideLoading(){
 
     return id;
 }
+
 /**
  * 提示
  * @param msg
@@ -157,12 +171,9 @@ function toast(options, hostDom){
     $toast.html(config.content);
 
     $hostDom.append($toast);
-    $toast.addClass("active");
+    $toast.addClass("xmpp-util-active");
     setTimeout(function(){
-        $toast.removeClass("active").addClass("deactive");
-        setTimeout(function(){
-            $toast.remove();
-        },200);
+        $toast.remove();
     }, config.delay);
 
     return $toast;
@@ -172,26 +183,28 @@ function toast(options, hostDom){
  * @param target
  * @param triggerTarget
  */
-function initMoveAble(target, triggerTarget, restrictBound){
+function initMoveAble(target, container, restrictBound){
     var namespace = ".moveAble";
-    var $triggerTarget = $(triggerTarget);
+    var $container = $(container);
 
 
     var $win = $(window);
 
-    $triggerTarget.off("mousedown" + namespace).on("mousedown" + namespace, target, function(evt){
+    var $target = $container.find(target);
+
+    $target.off("mousedown" + namespace).on("mousedown" + namespace, function(evt){
         //全屏模式，禁止移动
-        if($triggerTarget.hasClass("full-expand")){
+        if($container.hasClass("full-expand")){
             return false;
         }
 
-        var targetOffset = $triggerTarget.offset();
+        var targetOffset = $container.offset();
         var relativePos = {
             x:evt.pageX - targetOffset.left,
             y:evt.pageY - targetOffset.top
         };
-        var maxLeft = $win.width()  - $triggerTarget.innerWidth();
-        var maxTop = $win.height() - $triggerTarget.innerHeight();
+        var maxLeft = $win.width()  - $container.innerWidth();
+        var maxTop = $win.height() - $container.innerHeight();
 
         $win.off("mousemove" + namespace).on("mousemove" + namespace, function(evt){
             var left = evt.clientX - relativePos.x;
@@ -214,7 +227,7 @@ function initMoveAble(target, triggerTarget, restrictBound){
 
             }
 
-            $triggerTarget.css({
+            $container.css({
                 left:left,
                 top:top
             });
@@ -229,49 +242,17 @@ function initMoveAble(target, triggerTarget, restrictBound){
 
 
 }
+
+
+
 /**
- * 初始化全屏功能
- * @param target
- * @param triggerTarget
- */
-function initFullscreen(target, triggerTarget){
-    var $triggerTarget = $(triggerTarget);
-
-    $triggerTarget.on("click",  target, function(evt){
-        var $this = $(this);
-        if($triggerTarget.hasClass("full-expand")){
-            $triggerTarget.removeClass("full-expand");
-            $this.removeClass("active");
-        }else{
-            $triggerTarget.addClass("full-expand");
-            $this.addClass("active");
-        }
-
-    });
-
-
-}
-/**
- * 缩小界面
- * @param target
- * @param triggerTarget
- */
-function initMinCollapse(target, triggerTarget){
-    var $triggerTarget = $(triggerTarget);
-
-
-    $triggerTarget.on("click", target, function(evt){
-        //nothing
-    });
-
-
-}
-/**
- * 居中位置
+ * 初始化弹框位置
  * @param target
  */
-function centerPosition(target){
+function initPosition(target, position){
     var $target = $(target);
+
+    var posList = $.trim(position).split(/\s+/);
 
     var $offsetParent = $target.offsetParent();
     if($.inArray($offsetParent.prop("nodeName"), ["HTML", "BODY"]) != -1){
@@ -279,14 +260,44 @@ function centerPosition(target){
     }
 
     var pWidth = $offsetParent.width();
-    var pHeight = $offsetParent.height() + $offsetParent.scrollTop();
-
+    var pHeight = $offsetParent.height();
     var left = (pWidth - $target.width()) / 2;
-    var top = (pHeight - $target.height()) / 2;
-    if(top < 0){
-        //防止超出界限
-        top = 0;
+    var top = (pHeight - $target.height()) / 2;;
+    for(let i = 0 ; i < posList.length; i++){
+        let pos = posList[i];
+        switch(pos){
+            case "left":
+                left = 0;
+                break;
+            case "center":
+                if(i == 0){
+                    left = (pWidth - $target.width()) / 2;
+                }else{
+                    top = (pHeight - $target.height()) / 2;
+                }
+                break;
+            case "right":
+                left = pWidth - $target.width();
+                break;
+            case "top":
+                top = 0;
+                break;
+            case "bottom":
+                top = pHeight - $target.height();
+                break;
+
+        }
+
+        if(top < 0){
+            //防止超出界限
+            top = 0;
+        }
+
+        if(left < 0){
+            left = 0;
+        }
     }
+
 
     $target.css({
         left:left,
@@ -303,65 +314,57 @@ function centerPosition(target){
 function popup(options, hostDom){
     var config = {
         overlay:false,
-        container:null,
+        content:null,
         closeIdent:"popup-close",
         headerIdent:"popup-header",
-        bodyIdent:"popup-body",
-        footerIdent:"popup-footer",
-        fullIdent:"popup-full",
-        minIdent:"popup-min"
+        position:"center"
     };
 
     if(!$.isPlainObject(options)){
-        var container = options;
+        var content = options;
         options = {
-            container:container
+            content:content
         }
     }
 
     $.extend(config, options);
 
-    if(config.container == null || config.container.length == 0){
-        throw new Error("options container required");
+    if(config.content == null || config.content.length == 0){
+        throw new Error("options content required");
     }
-
-
-    var $container = $(config.container);
-    $container.css({position:"absolute"});
 
 
     var operation = {
         originalOperation:{},
-        dom:$container,
+        getContent:function(){
+          return this.originalOperation.content;
+        },
         open:function(){
-            maskOperation.open();
-            centerPosition($container);
+            this.originalOperation.open();
+            initPosition(this.originalOperation.content, config.position);
+            this.originalOperation.active();
         },
         hide:function(){
-            maskOperation.hide();
+            var _this = this;
+            _this.originalOperation.deactive(function(){
+                _this.originalOperation.hide();
+            });
+
+
         },
         close:function(){
-            maskOperation.close();
+            var _this = this;
+            _this.originalOperation.deactive(function(){
+                _this.originalOperation.close();
+            });
+
         }
     };
 
-    //可关闭
-    $container.find("["+config.closeIdent+"]").click(function(evt){
-        operation.close();
-    });
-
-    //可移动
-    initMoveAble("["+config.headerIdent+"]", $container, true);
-
-    //可全屏
-    initFullscreen("["+config.fullIdent+"]", $container);
-
-    //可缩小
-    initMinCollapse("["+config.minIdent+"]", $container);
 
     var maskOperation = createMask({
         overlay:config.overlay,
-        content:$container
+        content:config.content
     }, hostDom);
 
 
@@ -369,6 +372,15 @@ function popup(options, hostDom){
 
     operation.originalOperation = maskOperation;
 
+
+    var $content  = maskOperation.content;
+    //可关闭
+    $content.find("["+config.closeIdent+"]").click(function(evt){
+        operation.close();
+    });
+
+    //可移动
+    initMoveAble("["+config.headerIdent+"]", $content, true);
 
     return operation;
 
@@ -408,8 +420,7 @@ function dialog(options, hostDom){
         width:480,
         height:"auto",
         isOpen:true,
-        canClose:true,
-        canFullscreen:true
+        canClose:true
     };
 
     if(typeof options == "string"){
@@ -424,7 +435,7 @@ function dialog(options, hostDom){
 
 
     //头部
-    var $dialog = $("<div class='util-dialog'></div>");
+    var $dialog = $("<div class='util-dialog' ></div>");
 
     $dialog.css({
         width:config.width,
@@ -434,13 +445,8 @@ function dialog(options, hostDom){
     var dialogOperation = {
         dom:$dialog,
         originalOperation:{},
-        deactive:function(){
-            this.originalOperation.deactive();
-        },
         open:function(){
             this.originalOperation.open();
-            centerPosition($dialog);
-            this.originalOperation.active();
         },
         close:function(){
             this.originalOperation.close();
@@ -450,34 +456,18 @@ function dialog(options, hostDom){
 
 
     if(config.title != null){
-        var $header = $("<div class='util-dialog-header'></div>");
+        var $header = $("<div class='util-dialog-header' popup-header ></div>");
 
         $header.append(config.title);
 
         var $tool = $("<div class='util-dialog-tool'></div>");
-        if(config.canFullscreen){
-            var $fullscreen = $("<a href='javascript:;' class='util-dialog-fullscreen'></a>");
-
-            initFullscreen($fullscreen, $dialog);
-
-
-            $tool.append($fullscreen);
-        }
-
         if(config.canClose){
-            var $close = $("<a href='javascript:;' class='util-dialog-close'>&times;</a>");
-            $close.on("click", function(evt){
-                var result = config.cancel && config.cancel.call(this, evt);
-                if(result !== false){
-                    dialogOperation.close();
-                }
-            });
+            var $close = $("<a href='javascript:;' class='util-dialog-close' popup-close >&times;</a>");
             $tool.append($close);
         }
 
 
         $header.append($tool);
-        initMoveAble($header, $dialog, true);
         $dialog.append($header);
 
 
@@ -518,9 +508,12 @@ function dialog(options, hostDom){
 
     }
 
-    var maskObj = createMask($dialog, hostDom);
+    var popupObj = popup({
+        overlay:true,
+        content:$dialog
+    }, hostDom);
 
-    dialogOperation.originalOperation = maskObj;
+    dialogOperation.originalOperation = popupObj;
 
     if(config.isOpen){
         dialogOperation.open();
@@ -549,6 +542,8 @@ function alert(msg, callback){
  * @param form
  * @returns {{}}
  */
+
+
 function formData(form){
     var $form = $(form);
     var data = {};
@@ -627,4 +622,5 @@ var util = {
     showError:showError,
     additionErrorHandler:additionErrorHandler
 };
+
 export default  util;
