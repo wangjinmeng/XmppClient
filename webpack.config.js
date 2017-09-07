@@ -11,7 +11,7 @@ var devtool = "eval-source-map";
 
 //注意配置的变量值是否有空白字符
 if(process.env.NODE_ENV == "production"){
-    publicPath = "//192.168.3.28/im/";
+    publicPath = "//192.168.3.28/imClient/";
     devtool = "";
 }
 
