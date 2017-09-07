@@ -1,0 +1,16 @@
+.xmpp-qq-face{
+    background: #fff;
+    border:1px solid #ddd;
+    border-collapse: collapse;
+}
+.xmpp-qq-face td{
+    border:1px solid #ddd;
+}
+.xmpp-qq-face td:hover {
+    background: #ddd;
+}
+.xmpp-qq-face-item{
+    display: block;
+    cursor: pointer;
+}
+

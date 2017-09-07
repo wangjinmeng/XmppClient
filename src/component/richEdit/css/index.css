@@ -1,0 +1,12 @@
+.xmpp-rich-edit{
+    background: #fff;
+}
+.xmpp-rich-edit-tool{
+    height: 38px;
+    line-height: 38px;
+}
+.xmpp-rich-edit-textarea{
+    width:100%;
+    height: 400px;
+
+}
