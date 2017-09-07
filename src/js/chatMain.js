@@ -7,6 +7,8 @@ import util from '../plugin/util/util';
 import qq from '../img/qq.jpg';
 import tt from '../img/tt.jpg';
 import tool from './tool';
+import richEdit from '../component/richEdit/richEdit';
+
 var $node=$([
     '<div id="main-panel" class="chat-main-box contact-main-box">',
     '        <div class=" xmpp-box-shadow contact-wp" id="js-xmpp-chat-panel">',
@@ -33,6 +35,7 @@ var flagMap={
     init:false
 };
 var jqueryMap={};
+
 //表单输入值事件:inputKeyPress; 1:按键按下，2:发送
 //查找聊天记录事件：queryHistory; jid:裸jid
 var chatBox={
@@ -65,7 +68,7 @@ var chatBox={
         '            <ul class="js-msg-box"></ul>',
         '        </div>',
         '        <div class="box-chat-footer pr fix">',
-        '            <div class="box-chat-tool dn">',
+        '            <div class="box-chat-tool">',
         '           </div>',
         '            <textarea class="box-chat-textarea js-box-chat-textarea" placeholder="发送信息..."></textarea>',
         '            <div class="xmpp-button xmpp-button-main box-chat-bottom js-send-msg" >',
@@ -118,6 +121,7 @@ var chatBox={
         }
     },
     handleMsgDom:function (jid_id,status,msg,time,name){
+        msg=tool.escapeHtml(msg);
         var _name=status=='send'?'me':name;
         var _temp=status=='send'?this.sendMsgStr:this.receiveMsgStr;
         var $dom=$('#'+jid_id+'-item').find('.js-msg-box');
