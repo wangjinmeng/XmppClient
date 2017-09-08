@@ -7,11 +7,10 @@ import util from '../plugin/util/util';
 import qq from '../img/qq.jpg';
 import tt from '../img/tt.jpg';
 import tool from './tool';
-import richEdit from '../component/richEdit/richEdit';
 
 var $node=$([
     '<div id="main-panel" class="chat-main-box contact-main-box">',
-    '        <div class=" xmpp-box-shadow contact-wp" id="js-xmpp-chat-panel">',
+    '        <div class=" xmpp-box-shadow contact-wp pr" id="js-xmpp-chat-panel">',
     '            <div class="contact-tt" popup-header>',
     '                <div class="contact-tt-name js-name">-_-</div>',
     '                <select name="" id="js-change-status" class="contact-tt-status ">',
@@ -124,7 +123,7 @@ var chatBox={
         msg=tool.escapeHtml(msg);
         var _name=status=='send'?'me':name;
         var _temp=status=='send'?this.sendMsgStr:this.receiveMsgStr;
-        var $dom=$('#'+jid_id+'-item').find('.js-msg-box');
+        var $dom=this.nodeMap[jid_id].find('.js-msg-box');
         var _data={
             msg: msg,
             time: time,
@@ -155,21 +154,28 @@ var chatBox={
         name=name?name:full_jid;
         this.add(jid_id,full_jid,name);
         if(msg){
-            this.handleMsgDom(jid_id,'receive',msg,time,name)
+            this.handleMsgDom(jid_id,'receive',msg,time,name);
         }
         if(composing){
-            $('#'+jid_id+'-item').find('.js-status').html('正在输入...')
+            this.nodeMap[jid_id].find('.js-status').html('正在输入...')
         }else{
-            $('#'+jid_id+'-item').find('.js-status').html('');
+            this.nodeMap[jid_id].find('.js-status').html('');
         }
     },
     subscribeEvent:function(event,fn){
         this.$this.on(event,fn);
     },
     initNode:function(jid_id,jid,name){
+        debugger;
         var _this = this;
         var _node= $('<div class="box-box js-chat-box-item" composing="false" data-href="' + jid_id + '" id="' + jid_id + '-item" data-jid="'+jid+'"></div>');
         _node.html(this.nodeStr);
+        _node.find('.js-box-chat-textarea').on('blur',function(){
+            var $parents=$(this).parents('.js-chat-box-item');
+            var _jid=$parents.attr('data-jid');
+            $parents.attr('composing',false);
+            _this.$this.trigger('inputBlur',{jid:_jid});
+        });
         _node.find('.js-name').html(name);
         _node.find('.js-close-msg-box').on('click', function () {});
         return _node
@@ -186,22 +192,22 @@ var chatBox={
             if(!this.nodeMap[jid_id]){
                 this.nodeMap[jid_id]=this.initNode(jid_id,jid,name);
             }
-            // $chatBox.find('.js-chat-box-item').addClass('hidden');
             $chatBox.append(this.nodeMap[jid_id]);
-            if($chatBox.find('.js-chat-box-item').length>1){
-                $chatBox.addClass(this.multipleBoxCls)
-            }else{
-                // $chatBox.removeClass('hidden');
-                this.popups.open();
-                $chatBox.removeClass(this.multipleBoxCls);
-            }
         }
-        this.select(jid_id);
     },
-    select:function(jid_id){
+    select:function(jid_id,jid,name){
+        this.add(jid_id,jid,name);
+        var $chatBox=$('#js-chat-box');
+        if($chatBox.find('.js-chat-box-item').length>1){
+            $chatBox.addClass(this.multipleBoxCls)
+        }else{
+            this.popups.open();
+            $chatBox.removeClass(this.multipleBoxCls);
+        }
         $('#'+jid_id+'-item').removeClass('hidden').siblings().addClass('hidden');
         $('#'+jid_id+'-nav').addClass('cur').siblings().removeClass('cur');
         $('#'+jid_id+'-item').find('.js-box-chat-textarea').focus();
+        this.scrollToBottom(this.nodeMap[jid_id].find('.js-msg-box'));
     },
     remove:function(jid_id){
         if(!this.nodeMap[jid_id]) return;
@@ -332,13 +338,6 @@ var Gab={
                 name+=' <span class="js-tip-msg">等待对方审核</span>';
             }
             var jid_id=Gab.jid_to_id(jid);
-            // var htmlStr=' ' +
-            //     '<div class="contact-list-item js-contact-items offline"  id="'+jid_id+'" data-jid="'+jid+'" data-type="'+subscription+'">'+
-            //     '   <img class="tt" src="'+tt+'"/>'+
-            //     '   <span class="name">'+name+'</span>'+
-            //     '   <span class="del js-del">&times;</span>'+
-            //     '</div>';
-            // var contact=$(htmlStr);
             if($('#'+jid_id).length==0){
                 $('#js-contact-list').append(Gab.addContactDom(jid,subscription));
             }
@@ -422,20 +421,24 @@ var Gab={
         var full_jid=_$msg.attr('from');
         var jid=Strophe.getBareJidFromJid(full_jid);
         var name=Strophe.getNodeFromJid(jid);
-        name=name?name:'系统';
         var jid_id=Gab.jid_to_id(jid);
         var composing=_$msg.find('composing').length;
         var msg=_$msg.find('body').text();
         var time=tool.dealTime(new Date());
-        if(msg){
-            util.toast('收到的'+ name +'发来新消息');
-            Gab.storeMsg.push(jid,{
-                type:'receive',
-                msg:msg,
-                time:time
-            })
+        if(name){
+            if(msg){
+                Gab.storeMsg.push(jid,{
+                    type:'receive',
+                    msg:msg,
+                    time:time
+                });
+
+            }
+            chatBox.receiveMsg(jid_id,full_jid,name,time,msg,composing>0?true:false);
+        }else{
+            name='系统'
         }
-        chatBox.receiveMsg(jid_id,full_jid,name,time,msg,composing>0?true:false);
+        util.toast('收到的'+ name +'发来新消息');
         return true;
     },
     jid_to_id:function(jid){
@@ -504,7 +507,7 @@ function init(){
     $(document).on('click','.js-contact-items',function(){
         var _jid=$(this).attr('data-jid');
         var _jid_id=Gab.jid_to_id(_jid);
-        chatBox.add(_jid_id,_jid,Strophe.getNodeFromJid(_jid));
+        chatBox.select(_jid_id,_jid,Strophe.getNodeFromJid(_jid));
     });
     $(document).on('click','#js-add-contact',function(){
         if(!Gab.addContactPopups){
@@ -603,6 +606,14 @@ function init(){
         });
         chatBox.subscribeEvent('queryHistory',function (ev,data) {
             chatBox.receiveHistory(Gab.jid_to_id(data.jid),Gab.storeMsg.get(data.jid));
+        });
+        chatBox.subscribeEvent('inputBlur',function (ev,data) {
+            var _jid=data.jid;
+            var notify=$msg({
+                to:_jid,
+                type:'chat'
+            });
+            Gab.connection.send(notify);
         });
         $('#main-panel').find('.js-name').text(Strophe.getNodeFromJid(Gab.connection.jid));
         var iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});

@@ -1,0 +1,6 @@
+.chat-multiple-box .xmpp-chat-box-main {
+    margin-left: 200px;
+}
+.js-xmpp-chat-box .hidden{
+    display: none;
+}

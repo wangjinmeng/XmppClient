@@ -2,7 +2,8 @@
  * Created by Administrator on 2017/9/5.
  */
 import $ from 'jquery';
-import chatMain from './js/chatMain';
+// import chatMain from './js/chatMain';
+import chatMain from './js/index';
 import util from './plugin/util/util';
 import './css/index.css';
 var loginPopup= util.popup(
@@ -29,16 +30,15 @@ $(document).on('click',"#js-xmpp-login",function(){
         return
     }
     util.showLoading();
-    chatMain.login({
-        jid:_jid,
-        password:_password
-    },function(){
-        util.hideLoading();
-        loginPopup.close();
-        $initNode.off('click.open-login');
-    },function(){
-        util.hideLoading();
-    })
+    chatMain.login({jid:_jid,password:_password})
+});
+chatMain.addHandler('xmppChatConnected',function(){
+    util.hideLoading();
+    loginPopup.close();
+    $initNode.off('click.open-login');
+});
+chatMain.addHandler('xmppChatDisconnected',function(){
+    util.hideLoading();
 });
 $(document).on('click',"#js-xmpp-tip-box-close",function(){
     loginPopup.hide();

@@ -1,0 +1,104 @@
+/**
+ * Created by Administrator on 2017/9/7.
+ */
+import './css/index.css'
+import $ from 'jquery';
+import qqFace from '../qqFace/index';
+let cacheData={
+    count:parseInt(Math.random()*1000)
+};
+function getHtmlNode(count){
+    let $htmlNode=$(`<div id="js-xmpp-rich-edit-${count}" class="xmpp-rich-edit">
+                <ul id="js-xmpp-rich-edit-tool" class="xmpp-rich-edit-tool">
+                    <li class=" xmpp-rich-edit-tool-item-box pr">
+                        <a class="js-xmpp-rich-edit-qq-face-btn  xmpp-rich-edit-tool-item">表情</a>
+                        <div class="js-xmpp-rich-edit-qq-face-box xmpp-rich-edit-qq-face-box" style="display: none;"></div>
+                    </li>
+                    <li class="xmpp-rich-edit-tool-item-box">
+                        <a class="js-xmpp-rich-edit-bold xmpp-rich-edit-tool-item">加粗</a>
+                    </li>
+                </ul>
+                <div composing="false" id="js-xmpp-rich-edit-textarea-${count}" class="xmpp-rich-edit-textarea js-xmpp-rich-edit-textarea" contenteditable="true"></div>
+            </div>`);
+    return $htmlNode;
+}
+let RichEdit=function () {
+    this.$node=null;
+    this.qqFace=null;
+    this.$textarea=null;
+    this.$event=$('<div></div>');
+};
+RichEdit.prototype.init =function () {
+    let _this=this;
+    _this.$node=getHtmlNode(cacheData.count++);
+    _this.qqFace=qqFace();
+    _this.$node.find('.js-xmpp-rich-edit-qq-face-box').append(_this.qqFace.$node);
+    _this.$textarea= _this.$node.find('.js-xmpp-rich-edit-textarea');
+    _this.$boldBtn= _this.$node.find('.js-xmpp-rich-edit-bold');
+    _this.$qqFaceBtn= _this.$node.find('.js-xmpp-rich-edit-qq-face-btn');
+    _this.$textarea.on('mouseup',function(){
+        var _boldStatus=document.queryCommandState('bold');
+        if(_boldStatus){
+            _this.$boldBtn.addClass('cur')
+        }else{
+            _this.$boldBtn.removeClass('cur')
+        }
+    });
+    _this.$textarea.on('focus',function(){
+        var _composing=$(this).attr('composing');
+        if(_composing=='false'){
+            console.log('focus');
+            $(this).attr('composing',true);
+            _this.$event.trigger('xmppRichEditFocus');
+        }
+    }).on('blur',function(){
+        console.log('blur');
+        $(this).attr('composing',false);
+        _this.$event.trigger('xmppRichEditBlur');
+    });
+    _this.$qqFaceBtn.on('mousedown',function(){
+        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').slideToggle();
+        return false
+    });
+    _this.$node.find('.js-xmpp-rich-edit-reset').on('mousedown',function(){
+        _this.resetTextArea();
+        return false
+    });
+    _this.$node.find('.js-xmpp-rich-edit-get').on('mousedown',function(){
+        console.log(_this.getText());
+        return false
+    });
+    _this.$boldBtn.on('mousedown',function(){
+        document.execCommand('bold',false,null);
+        $(this).toggleClass('cur');
+        _this.$textarea.focus();
+        return false
+    });
+    this.qqFace.addHandle('qqFaceClickItem',function (data) {
+        let _src=data.src;
+        _this.$textarea.focus();
+        document.execCommand('insertImage',false,_src);
+        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').slideToggle();
+        return false
+    });
+};
+RichEdit.prototype.getText=function () {
+    return this.$textarea.html();
+};
+RichEdit.prototype.resetTextArea=function () {
+    this.$textarea.html('');
+};
+RichEdit.prototype.addHandle=function (eventName,fn) {
+    let _this=this;
+    _this.$event.on(eventName,function (evt,data) {
+        if($.isFunction(fn)){
+            fn(data)
+        }
+    })
+};
+function plugIn(){
+    var _richEdit=new RichEdit();
+    _richEdit.init();
+    return _richEdit;
+}
+export default plugIn;

@@ -21,7 +21,7 @@
 .chat-main-box textarea {
     resize: none;
 }
-.chat-main-box  .fl {
+.chat-main-box .fl {
     float: left;
 }
 .chat-main-box .fr {
@@ -144,8 +144,9 @@ label.form-name {
     background: #999;
 }
 .contact-main-box {
-    position: relative;
-    right:50px;
+    /*position: relative;*/
+    /*right:50px;*/
+    width: 310px;
 }
 .contact-wp {
     width: 260px;
@@ -324,6 +325,7 @@ label.form-name {
 .chat-box-slider-item .close:hover{
     background: red;
 }
+
 .box-wp{
     position: relative;
     height:100%;
@@ -337,7 +339,6 @@ label.form-name {
     padding: 15px;
     cursor: move;
 }
-
 .box-title-user-info{
     padding: 5px;
     padding-left: 15px;
@@ -425,12 +426,10 @@ label.form-name {
     right: -1em;
     left: auto;
 }
-
 .box-chat-mine .box-char-info .msg img{
     max-width:100%;
     max-height:260px;
 }
-
 
 .box-chat-footer{
     /*height: 200px;*/
@@ -450,6 +449,7 @@ label.form-name {
     font-size: 12px;
     line-height:2;
     color: #5fb878;
+    cursor: pointer;
 }
 .box-chat-textarea{
     height: 100px;

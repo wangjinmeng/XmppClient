@@ -1,0 +1,42 @@
+
+.xmpp-chat-box-item  .fl {
+    float: left;
+}
+.xmpp-chat-box-item .fr {
+    float: right;
+}
+.xmpp-chat-box-item .fix:after {
+    content: "";
+    clear: both;
+    display: block
+}
+.xmpp-chat-box-item .dn {
+    display: none;
+}
+.xmpp-chat-box-item .pr{
+    position: relative;
+}
+.xmpp-chat-box-item,
+.xmpp-chat-box-item *
+{
+    padding:0;
+    margin:0;
+}
+.xmpp-chat-box-item ul{
+    list-style: none;
+}
+.xmpp-chat-box-item{
+    position: relative;
+    height:100%;
+    background: rgba(255,255,255,0.8);
+}
+.xmpp-chat-box-item-title{
+    border-bottom: none;
+    background-color: #F8F8F8;
+    background-color: rgba(200,200,200,0.7);
+    padding: 15px;
+    cursor: move;
+}
+.xmpp-chat-box-item-text-area{
+    height: 138px;
+}

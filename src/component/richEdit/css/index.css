@@ -1,12 +1,31 @@
 .xmpp-rich-edit{
-    background: #fff;
+    /*background: #fff;*/
 }
 .xmpp-rich-edit-tool{
-    height: 38px;
-    line-height: 38px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.xmpp-rich-edit-tool-item-box{
+    position: relative;
+    display: inline-block;
+}
+.xmpp-rich-edit-tool-item{
+    font-size: 16px;
+    padding: 0.5em;
+    line-height: 1em;
+    cursor: pointer;
+    display: block;
+}
+.xmpp-rich-edit-tool-item:hover,
+.xmpp-rich-edit-tool-item.cur{
+    background: #ddd;
+}
+.xmpp-rich-edit-qq-face-box{
+    position: absolute;
+    bottom: 32px;
 }
 .xmpp-rich-edit-textarea{
     width:100%;
-    height: 400px;
-
+    height: 100px;
 }
