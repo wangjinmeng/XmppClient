@@ -148,12 +148,12 @@ let xmppChat={
                 localData.splice(0,1)
             }
             localData.push(data);
-            var myJid=Strophe.getBareJidFromJid(Gab.connection.jid);
+            var myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
             var keyName=myJid+'&'+jid;
             window.localStorage[keyName]=JSON.stringify(localData);
         },
         get:function(jid){
-            var myJid=Strophe.getBareJidFromJid(Gab.connection.jid);
+            var myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
             var keyName=myJid+'&'+jid;
             var msg=window.localStorage[keyName];
             if(!msg){
