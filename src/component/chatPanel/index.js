@@ -41,6 +41,36 @@ function getContactNode(name,id,img,sub) {
                 </div>`;
     return $(nodeStr)
 }
+function addContactPopup(callback){
+    let _$popup=$(`
+            <div class="chat-tip-box xmpp-box-shadow">
+            <div class="chat-tip-tt" popup-header>
+                    添加好友
+                <a class="chat-tip-tt-handle" popup-close><span class="xmpp-close-btn">&times;</span></a>
+            </div>
+            <div class="chat-tip-cont">
+            <div class="form-box">
+                <label class="form-name">名称</label>
+                <input class="form-input js-xmpp-chat-panel-add-contact-name" type="text">
+            </div>
+            </div>
+            <div class="chat-tip-handle">
+                <a class="js-xmpp-chat-panel-add-contact-btn xmpp-button xmpp-button-main chat-tip-btn">确定</a>
+            </div>
+            </div>`);
+    _$popup.find('.js-xmpp-chat-panel-add-contact-btn').on('click',function(){
+        var _name=$.trim(_$popup.find('.js-xmpp-chat-panel-add-contact-name').val());
+        if(!_name){
+            util.toast('请填写完整');
+            return
+        }
+        if($.isFunction(callback)){
+            callback(_name);
+        }
+    });
+    return util.popup(_$popup);
+    // Gab.addContactPopups.open();
+}
 /**
  *
  * @param name
@@ -69,7 +99,9 @@ ChatMainPanel.prototype.init=function () {
         _this.$event.trigger('xmppChatMainPanelHide',{id:_this.id});
     });
     _this.$node.find('.js-xmpp-chat-panel-add-contact').on('click',function(){
-        _this.$event.trigger('xmppChatMainPanelAddContact',{id:_this.id});
+        addContactPopup(function(name){
+            _this.$event.trigger('xmppChatMainPanelAddContact',{id:_this.id,name:name});
+        }).open();
     });
     _this.$node.find('.js-xmpp-chat-panel-change-status').on('change',function () {
         let _statua=$(this).val();
@@ -99,6 +131,9 @@ ChatMainPanel.prototype.init=function () {
     _this.chatBox.addHandler('xmppChatBoxBlur',function (data) {
         _this.$event.trigger('xmppChatPanelBlur',data)
     });
+    _this.chatBox.addHandler('xmppChatBoxQueryHistory',function (data) {
+        _this.$event.trigger('xmppChatPanelQueryHistory',data)
+    });
 
 };
 ChatMainPanel.prototype.show=function () {
@@ -109,6 +144,7 @@ ChatMainPanel.prototype.hide=function () {
 };
 ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
     let _this=this;
+    if(_this.contactListCache[id]){return false}
     let _$contactNode=getContactNode(name,id,img,sub);
     _$contactNode.find('.js-del').on('click',function(){
         _this.$event.trigger('xmppMainPanelDelContace',{id:id});
@@ -116,6 +152,7 @@ ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
     });
     _this.contactListCache[id]=_$contactNode;
     _this.$node.find('.js-xmpp-chat-panel-contact-list').append(_$contactNode);
+    return true
 };
 ChatMainPanel.prototype.delContact=function (id) {
     var _$contactItem=this.contactListCache[id];
@@ -138,6 +175,10 @@ ChatMainPanel.prototype.receiveMsg=function (name,id,data) {
         _$unReadMsgNum.html(_unReadNum).show();
     }
 };
+ChatMainPanel.prototype.receiveHistroyMsg=function (name,id,data) {
+    this.chatBox.receiveHistroyMsg(name,id,data);
+};
+
 //展示正在输入状态
 ChatMainPanel.prototype.showStatus=function (id) {
     this.chatBox.showStatus(id)

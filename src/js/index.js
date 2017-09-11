@@ -2,7 +2,8 @@
  * Created by wangjinmeng on 2017/9/8.
  */
 import $ from 'jquery';
-import tool from '../js/tool'
+import tool from '../js/tool';
+import util from '../plugin/util/util';
 import {Strophe,$iq,$msg,$pres} from 'strophe.js';
 import ChatPanel from '../component/chatPanel/index';
 let ttImg=require('../img/tt.jpg');
@@ -56,12 +57,16 @@ let xmppChat={
         let _$composing=$msg.find('composing');
         let _fromJid=Strophe.getBareJidFromJid($msg.attr('from'));
         if(_fromJid==xmppChat.domain){
+            if(_$msgItem.length>0){
+                util.toast(_$msgItem.text());
+            }
             return true;
         }
         if(_$composing.length>0){
             //正在输入
             xmppChat.chatPanel.showStatus(_fromJid);
         }else if(_$msgItem.length>0){
+            util.toast('收到'+Strophe.getNodeFromJid(_fromJid)+'发来的新消息');
             //收到消息
             let _msgData={
                 msg:_$msgItem.text(),
@@ -120,6 +125,30 @@ let xmppChat={
         //失去焦点发送空消息
         xmppChat.connection.send(msg);
     },
+    del_contact:function(jid){
+        var iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',{
+            jid:jid,
+            subscription:'remove'
+        });
+        xmppChat.connection.sendIQ(iq,function(d){
+            util.toast('删除成功');
+            xmppChat.chatPanel.delContact(jid);
+        });
+    },
+    add_contact:function (data) {
+        data.jid=data.name+'@'+xmppChat.domain;
+        var res=xmppChat.chatPanel.addContact(data.name,data.jid,null,'none');//添加好友失败返回false
+        if(!res) {
+            util.toast('请勿重复添加');
+            return
+        }
+        var iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',data);
+        xmppChat.connection.sendIQ(iq);
+        var subscribe=$pres({to:data.jid,'type':'subscribe'});
+        xmppChat.connection.send(subscribe);
+        util.toast('发送成功,等待对方确认');
+
+    },
     init:function(){
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
@@ -135,6 +164,17 @@ let xmppChat={
         });
         xmppChat.chatPanel.addHandler('xmppChatPanelBlur',function (data) {
             xmppChat.send_message('blur',data);
+        });
+        xmppChat.chatPanel.addHandler('xmppChatPanelQueryHistory',function (data) {
+            xmppChat.chatPanel.receiveHistroyMsg(Strophe.getNodeFromJid(data.id),data.id,xmppChat.storeMsg.get(data.id))
+        });
+        xmppChat.chatPanel.addHandler('xmppMainPanelDelContace',function (data) {
+            if (confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？")) {
+                xmppChat.del_contact(data.id);
+            }
+        });
+        xmppChat.chatPanel.addHandler('xmppChatMainPanelAddContact',function (data) {
+            xmppChat.add_contact(data)
         });
     },
     storeMsg:{
@@ -161,13 +201,9 @@ let xmppChat={
             }
             return JSON.parse(msg);
         }
-    },
+    }
 };
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
-
-
-
-
 export default xmppChat
 
 

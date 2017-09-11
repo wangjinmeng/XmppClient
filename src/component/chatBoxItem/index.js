@@ -11,7 +11,7 @@ import myHtImg from './img/tt.jpg';
 function getNode(name,id){
     let nodeStr=
         `<div class="js-xmpp-chat-box-item xmpp-chat-box-item" data-id="${id}">
-            <div class="xmpp-chat-box-item-title fix">
+            <div class="xmpp-chat-box-item-title fix" popup-header>
                 <div class="box-title-user-img fl user-img">
                     <img src="${myHtImg}" />
                 </div>
@@ -159,7 +159,7 @@ ChatBoxItem.prototype.handleMsgDom=function (msg,time,status) {
 ChatBoxItem.prototype.receiveHistroyMsg=function(data){
     this.$node.find('.js-xmpp-chat-box-item-msg-box').empty();
     for(let i=0;i<data.length;i++){
-        this.handleMsgDom(data[i].msg,data[i].time);
+        this.handleMsgDom(data[i].msg,data[i].time,data[i].type);
     }
 };
 ChatBoxItem.prototype.addHandler=function (eventName,fn) {

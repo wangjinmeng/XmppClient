@@ -65,21 +65,13 @@ RichEdit.prototype.init =function () {
         _this.$node.find('.js-xmpp-rich-edit-qq-face-box').slideToggle();
         return false
     });
-    _this.$node.find('.js-xmpp-rich-edit-reset').on('mousedown',function(){
-        _this.resetTextArea();
-        return false
-    });
-    _this.$node.find('.js-xmpp-rich-edit-get').on('mousedown',function(){
-        console.log(_this.getText());
-        return false
-    });
     _this.$boldBtn.on('mousedown',function(){
         document.execCommand('bold',false,null);
         $(this).toggleClass('cur');
         _this.$textarea.focus();
         return false
     });
-    this.qqFace.addHandle('qqFaceClickItem',function (data) {
+    _this.qqFace.addHandle('qqFaceClickItem',function (data) {
         let _src=data.src;
         _this.$textarea.focus();
         document.execCommand('insertImage',false,_src);

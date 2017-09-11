@@ -5,18 +5,6 @@ import './css/index.css'
 import $ from 'jquery';
 import chatBoxItem from '../chatBoxItem/index';
 import util from '../../plugin/util/util'
-// var a=chatBoxItem('wjm',2222);
-// $('body').append( a.$node);
-// a.addHandler('xmppChatBoxSendMsg',function (data) {
-//     console.log(data)
-// });
-// a.addHandler('xmppChatBoxClose',function (data) {
-//     console.log('close',data);
-// });
-// a.addHandler('xmppChatBoxQueryHistory',function (data) {
-//     console.log('QueryHistory',data);
-// });
-// window.a=a;
 import tt from '../../img/tt.jpg'
 function getNode(){
     let nodeStr=`<div class="chat-box pr chat-main-box xmpp-box-shadow js-xmpp-chat-box" >
