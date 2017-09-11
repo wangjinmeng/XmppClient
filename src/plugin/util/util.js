@@ -427,7 +427,7 @@ function closePopup(){
  */
 function dialog(options, hostDom){
     var config = {
-        title:"提示信息",
+        title:"",
         content:"",
         buttons:[],
         okText:"确认",
@@ -546,7 +546,8 @@ function dialog(options, hostDom){
  */
 function alert(msg, callback){
 
-    util.dialog({
+  return  dialog({
+        title:"提示信息",
         content:msg,
         ok:function(){
             callback && callback.call(this);
@@ -554,6 +555,28 @@ function alert(msg, callback){
     });
 
 }
+
+/**
+ * 确认框
+ * @param msg
+ * @param callback
+ */
+function confirm(msg, callback){
+
+   return  dialog({
+        title:"确认提示",
+        content:msg,
+        ok:function(){
+            callback && callback.call(this, true);
+        },
+        cancel:function(){
+            callback && callback.call(this, false);
+        }
+    });
+
+}
+
+
 /**
  * 转化表单数据为对象
  * @param form
@@ -633,11 +656,12 @@ var util = {
     closePopup:closePopup,
     dialog:dialog,
     alert:alert,
+    confirm:confirm,
     initMoveAble:initMoveAble,
     formData:formData,
     isEmpty:isEmpty,
     showError:showError,
     additionErrorHandler:additionErrorHandler
 };
-
+window.util = util;
 export default  util;
