@@ -52,7 +52,7 @@ function getSendMsgNode(data,type){
                 </div>
             </div>
         </li>`;
-    let _receiveNodeStr= `
+    let _receiveNodeStr=$(`
             <li class="fix">
             <div class="box-chat-img user-img user-img-sm fl">
                 <img src="${myHtImg}" alt=""/>
@@ -62,12 +62,12 @@ function getSendMsgNode(data,type){
                     <span class="name">${data.name}</span>
                     <span class="time">${data.time}</span>
                 </div>
-                <div class="msg pr">
+                <div class="msg pr js-msg">
                     ${data.msg}
                     <span></span>
                 </div>
             </div>
-        </li>`;
+        </li>`) ;
     return type=='send'?$(_sendNodeStr):$(_receiveNodeStr);
 }
 /**
@@ -101,7 +101,7 @@ ChatBoxItem.prototype.init=function () {
             _this.richEdit.resetTextArea();
             _this.handleMsgDom(_text,tool.dealTime(new Date()),'send');
             _this.scrollToBottom();
-            _this.$event.trigger('xmppChatBoxItemSendMsg',{id:_this.id,msg:_text});
+            _this.$event.trigger('xmppChatBoxItemSendMsg',{id:_this.id,msg:_text,time:tool.dealTime(new Date())});
         }
         return false;
     });

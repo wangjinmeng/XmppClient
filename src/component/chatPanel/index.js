@@ -3,6 +3,7 @@
  */
 // import './css/index.css'
 import $ from 'jquery';
+import ChatBox from '../chatBox/index';
 import util from '../../plugin/util/util'
 function getNode(name){
     let nodeStr= `<div id="main-panel" class="chat-main-box contact-main-box js-xmpp-chat-panel-box">
@@ -28,15 +29,18 @@ function getNode(name){
                 </div>`;
     return $(nodeStr)
 }
-function getContactNode(name,id,img) {
-    let nodeStr=`<div class="contact-list-item js-contact-items offline" data-jid="${id}">
+function getContactNode(name,id,img,sub) {
+    if(sub=='none'||!sub){
+        name+='<span class="js-check">等待对方审核</span>'
+    }
+    let nodeStr=`<div class="contact-list-item js-contact-items offline" data-jid="${id}" data-name="${name}">
                    <img class="tt" src="${img}"/>
                    <span class="name">${name}</span>
+                   <span class="num js-num" style="display: none">0</span>
                    <span class="del js-del">&times;</span>
                 </div>`;
     return $(nodeStr)
 }
-
 /**
  *
  * @param name
@@ -54,9 +58,11 @@ let ChatMainPanel=function (name,id) {
     this.$event=$('<div></div>');
     this.contactListCache=[];
     this.popup=null;
+    this.chatBox=null;
 };
 ChatMainPanel.prototype.init=function () {
     let _this=this;
+    _this.chatBox=ChatBox();
     _this.$node=getNode(_this.name,_this.id);
     _this.$node.find('.js-xmpp-chat-panel-hide').on('click',function(){
         _this.hide();
@@ -70,10 +76,30 @@ ChatMainPanel.prototype.init=function () {
         _this.$event.trigger('xmppChatMainPanelChangeStatus',{status:_statua,id:_this.id});
         return false;
     });
+    _this.$node.on('click','.js-contact-items',function () {
+        let _name=$(this).attr('data-name');
+        let _id=$(this).attr('data-jid');
+        _this.chatBox.showItem(_name,_id);
+        $(this).find('.js-num').html('0').hide();
+        return false;
+    });
     _this.popup=util.popup({
         content:_this.$node,
         position:'bottom right'
     });
+//    发送消息
+    _this.chatBox.addHandler('xmppChatBoxSendMsg',function (data) {
+        _this.$event.trigger('xmppChatPanelSendMsg',data)
+    });
+//    发送获取正在输入消息
+    _this.chatBox.addHandler('xmppChatBoxFocus',function (data) {
+        _this.$event.trigger('xmppChatPanelFocus',data)
+    });
+//    发送取消正在输入消息
+    _this.chatBox.addHandler('xmppChatBoxBlur',function (data) {
+        _this.$event.trigger('xmppChatPanelBlur',data)
+    });
+
 };
 ChatMainPanel.prototype.show=function () {
     this.popup.open();
@@ -81,11 +107,12 @@ ChatMainPanel.prototype.show=function () {
 ChatMainPanel.prototype.hide=function () {
     this.popup.hide();
 };
-ChatMainPanel.prototype.addContact=function (name,id,img) {
+ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
     let _this=this;
-    let _$contactNode=getContactNode(name,id,img);
-    _$contactNode.find().on('click',function(){
+    let _$contactNode=getContactNode(name,id,img,sub);
+    _$contactNode.find('.js-del').on('click',function(){
         _this.$event.trigger('xmppMainPanelDelContace',{id:id});
+        return false;
     });
     _this.contactListCache[id]=_$contactNode;
     _this.$node.find('.js-xmpp-chat-panel-contact-list').append(_$contactNode);
@@ -101,6 +128,24 @@ ChatMainPanel.prototype.changeContactStatus=function (id,status) {
     let _$contactItem=this.contactListCache[id];
     _$contactItem.removeClass('offline').removeClass('away').removeClass('online').addClass(status);
 };
+ChatMainPanel.prototype.receiveMsg=function (name,id,data) {
+    let _res=this.chatBox.receiveMsg(name,id,data);
+    let _$unReadMsgNum=this.contactListCache[id].find('.js-num');
+    if(_res){
+        _$unReadMsgNum.html('0').hide();
+    }else{
+        let _unReadNum=parseInt(_$unReadMsgNum.html())+1;
+        _$unReadMsgNum.html(_unReadNum).show();
+    }
+};
+//展示正在输入状态
+ChatMainPanel.prototype.showStatus=function (id) {
+    this.chatBox.showStatus(id)
+};
+//收起正在输入状态
+ChatMainPanel.prototype.hideStatus=function (id) {
+    this.chatBox.hideStatus(id)
+};
 ChatMainPanel.prototype.addHandler=function (eventName,fn) {
     this.$event.on(eventName,function (evt,data) {
         if($.isFunction(fn)){
@@ -113,7 +158,5 @@ function plugIn(name,id){
     chatMainPanel.init();
     return chatMainPanel
 }
-window.cM=plugIn();
-cM.show();
 export default plugIn
 

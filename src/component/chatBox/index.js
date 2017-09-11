@@ -36,7 +36,6 @@ function getSlideNode(name,domId){
     `;
     return $(nodeStr)
 }
-
 function idToDomId(id){
     var _res=id.replace('@','-')
             .replace(/\./g,'-');
@@ -100,6 +99,7 @@ ChatBox.prototype.initChatBoxItem=function (name,id) {
     };
     //关闭单个对话框
     _chatBoxItem.addHandler('xmppChatBoxItemClose',function (data) {
+
         _this.chatBoxItemsCache[data.id].close();
     });
     //发送消息
@@ -137,6 +137,7 @@ ChatBox.prototype.open=function () {
     this.popup.open()
 };
 ChatBox.prototype.close=function () {
+    this.activeItemId='';
     this.openStatus=false;
     this.popup.hide();
 };
@@ -158,11 +159,11 @@ ChatBox.prototype.addHandler=function (eventName,fn) {
 };
 //收到消息
 ChatBox.prototype.receiveMsg=function (name,id,data) {
-    var _this=this;
+    let _this=this;
     if(!_this.chatBoxItemsCache[id]){
         _this.initChatBoxItem(name,id);
     }
-    let _chatBoxItem=_this.chatBoxItemsCache[id]
+    let _chatBoxItem=_this.chatBoxItemsCache[id];
     _chatBoxItem.main.handleMsgDom(data.msg,data.time);
     if(_this.activeItemId===id){
         _chatBoxItem.main.scrollToBottom();
@@ -171,8 +172,25 @@ ChatBox.prototype.receiveMsg=function (name,id,data) {
             let _chatBoxItemNavNodeNum=_chatBoxItem.navNode.find('.js-xmpp-chat-box-slider-item-num');
             var _num=parseInt(_chatBoxItemNavNodeNum.html())+1;
             _chatBoxItemNavNodeNum.removeClass('hidden').html(_num);
+        }else{
+            return false
         }
     }
+    return true;
+};
+//展示正在输入状态
+ChatBox.prototype.showStatus=function (id) {
+    if(!this.chatBoxItemsCache[id]){
+        return;
+    }
+    this.chatBoxItemsCache[id].main.showStatus()
+};
+//收起正在输入状态
+ChatBox.prototype.hideStatus=function (id) {
+    if(!this.chatBoxItemsCache[id]){
+        return;
+    }
+    this.chatBoxItemsCache[id].main.hideStatus()
 };
 //接受到历史消息
 ChatBox.prototype.receiveHistroyMsg=function (name,id,data) {

@@ -403,7 +403,6 @@ var Gab={
             if(pType=='unavailable'){
                 contact.addClass('offline');
             }else{
-
                 var show=$pre.find('show').text();
                 if(show===''||show==='chat'){
                     contact.addClass('online');

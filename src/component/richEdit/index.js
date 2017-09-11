@@ -22,6 +22,13 @@ function getHtmlNode(count){
             </div>`);
     return $htmlNode;
 }
+/**
+ *
+ * @constructor
+ * @event:
+ * xmppRichEditFocus:获得焦点
+ * xmppRichEditBlur:失去焦点
+ */
 let RichEdit=function () {
     this.$node=null;
     this.qqFace=null;
@@ -47,12 +54,10 @@ RichEdit.prototype.init =function () {
     _this.$textarea.on('focus',function(){
         var _composing=$(this).attr('composing');
         if(_composing=='false'){
-            console.log('focus');
             $(this).attr('composing',true);
             _this.$event.trigger('xmppRichEditFocus');
         }
     }).on('blur',function(){
-        console.log('blur');
         $(this).attr('composing',false);
         _this.$event.trigger('xmppRichEditBlur');
     });
