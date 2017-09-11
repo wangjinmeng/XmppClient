@@ -40,7 +40,6 @@ let xmppChat={
     },
     on_roster:function (iq) {
         $(iq).find('item').each(function (){
-            console.log($(this));
             let _name=$(this).attr('name');
             let _jid=$(this).attr('jid');
             let _subscript=$(this).attr('subscription');
@@ -82,16 +81,45 @@ let xmppChat={
     },
     on_presence:function (pre) {
         console.log(pre);
-        var $pre=$(pre);
-        var _pType=$pre.attr('type');
-        var _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
+        let $pre=$(pre);
+        let _pType=$pre.attr('type');
+        let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
+        let _name=Strophe.getNodeFromJid(_fromJid);
         if(_fromJid==xmppChat.jid){
             //此处处理与自己相关的出席通知
+            // debugger;
+            if(_pType){
+                _pType=_pType=='unavailable'?'offline':_pType
+            }else {
+                _pType='online';
+            }
+            xmppChat.chatPanel.changeSelfStatus(_pType=='unavailable'?'offline':_pType);
         }else{
             if(_pType==='subscribe'){
                 //收到订阅通知出席通知
+                let _contactCache=xmppChat.chatPanel.contactListCache[_fromJid];
+                if(_contactCache){
+                    xmppChat.connection.send($pres({
+                        to:_fromJid,
+                        type:'subscribed'
+                    }));
+                }else{
+                    util.confirm('接受'+_name +'发来的好友请求吗？',function () {
+                        //   接受处理
+                        xmppChat.accept_contact(_name,_fromJid);
+                        return true;
+                    });
+                }
             }else if(_pType==='subscribed'){
                 //收到接受订阅出席通知
+                let _contactCache=xmppChat.chatPanel.contactListCache[_fromJid];
+                if(_contactCache){
+                    let _checkDom=_contactCache.find('.js-check');
+                    if(_checkDom.length>0){
+                        _checkDom.remove();
+                        util.toast(_name+'同意了你的好友请求');
+                    }
+                }
             }else if(_pType!=='error'){
                 let _status;
                 if(_pType=='unavailable'){
@@ -126,7 +154,7 @@ let xmppChat={
         xmppChat.connection.send(msg);
     },
     del_contact:function(jid){
-        var iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',{
+        let iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',{
             jid:jid,
             subscription:'remove'
         });
@@ -137,17 +165,43 @@ let xmppChat={
     },
     add_contact:function (data) {
         data.jid=data.name+'@'+xmppChat.domain;
-        var res=xmppChat.chatPanel.addContact(data.name,data.jid,null,'none');//添加好友失败返回false
+        let res=xmppChat.chatPanel.addContact(data.name,data.jid,ttImg,'none');//添加好友失败返回false
         if(!res) {
             util.toast('请勿重复添加');
             return
         }
-        var iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',data);
+        xmppChat.chatPanel.addContactPopup.close();
+        let iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',data);
         xmppChat.connection.sendIQ(iq);
-        var subscribe=$pres({to:data.jid,'type':'subscribe'});
+        let subscribe=$pres({to:data.jid,'type':'subscribe'});
         xmppChat.connection.send(subscribe);
         util.toast('发送成功,等待对方确认');
-
+    },
+    accept_contact:function(name,id){
+        console.log(id);
+        xmppChat.connection.send($pres({
+            to:id,
+            type:'subscribed'
+        }));
+        xmppChat.connection.send($pres({
+            to:id,
+            type:'subscribe'
+        }));
+        xmppChat.chatPanel.addContact(name,id,ttImg,'both')
+    },
+    change_status:function (status) {
+        console.log(status);
+        var _pre;
+        if(status=='online'){
+            _pre=$pres()
+        }else if(status=='offline'){
+            _pre=$pres({
+                type:'unavailable'
+            })
+        }else if(status=='away'){
+            _pre=$pres().c('show').t('away')
+        }
+        xmppChat.connection.send(_pre);
     },
     init:function(){
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
@@ -169,18 +223,21 @@ let xmppChat={
             xmppChat.chatPanel.receiveHistroyMsg(Strophe.getNodeFromJid(data.id),data.id,xmppChat.storeMsg.get(data.id))
         });
         xmppChat.chatPanel.addHandler('xmppMainPanelDelContace',function (data) {
-            if (confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？")) {
+            util.confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？",function () {
                 xmppChat.del_contact(data.id);
-            }
+            });
         });
         xmppChat.chatPanel.addHandler('xmppChatMainPanelAddContact',function (data) {
             xmppChat.add_contact(data)
+        });
+        xmppChat.chatPanel.addHandler('xmppChatMainPanelChangeStatus',function (data) {
+            xmppChat.change_status(data.status)
         });
     },
     storeMsg:{
         maxLen:500,
         push:function(jid,data){
-            var localData=this.get(jid);
+            let localData=this.get(jid);
             if(localData.constructor!=Array){
                 localData=[]
             }
@@ -188,14 +245,14 @@ let xmppChat={
                 localData.splice(0,1)
             }
             localData.push(data);
-            var myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
-            var keyName=myJid+'&'+jid;
+            let myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
+            let keyName=myJid+'&'+jid;
             window.localStorage[keyName]=JSON.stringify(localData);
         },
         get:function(jid){
-            var myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
-            var keyName=myJid+'&'+jid;
-            var msg=window.localStorage[keyName];
+            let myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
+            let keyName=myJid+'&'+jid;
+            let msg=window.localStorage[keyName];
             if(!msg){
                 return [];
             }

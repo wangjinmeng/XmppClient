@@ -89,6 +89,7 @@ let ChatMainPanel=function (name,id) {
     this.contactListCache=[];
     this.popup=null;
     this.chatBox=null;
+    this.addContactPopup=null;
 };
 ChatMainPanel.prototype.init=function () {
     let _this=this;
@@ -99,9 +100,10 @@ ChatMainPanel.prototype.init=function () {
         _this.$event.trigger('xmppChatMainPanelHide',{id:_this.id});
     });
     _this.$node.find('.js-xmpp-chat-panel-add-contact').on('click',function(){
-        addContactPopup(function(name){
+        _this.addContactPopup=addContactPopup(function(name){
             _this.$event.trigger('xmppChatMainPanelAddContact',{id:_this.id,name:name});
-        }).open();
+        });
+        _this.addContactPopup.open();
     });
     _this.$node.find('.js-xmpp-chat-panel-change-status').on('change',function () {
         let _statua=$(this).val();
@@ -177,6 +179,9 @@ ChatMainPanel.prototype.receiveMsg=function (name,id,data) {
 };
 ChatMainPanel.prototype.receiveHistroyMsg=function (name,id,data) {
     this.chatBox.receiveHistroyMsg(name,id,data);
+};
+ChatMainPanel.prototype.changeSelfStatus=function (status) {
+    this.$node.find('.js-xmpp-chat-panel-change-status').val(status);
 };
 
 //展示正在输入状态
