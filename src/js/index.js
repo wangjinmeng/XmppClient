@@ -227,8 +227,10 @@ let xmppChat={
             xmppChat.chatPanel.receiveHistroyMsg(Strophe.getNodeFromJid(data.id),data.id,xmppChat.storeMsg.get(data.id))
         });
         xmppChat.chatPanel.addHandler('xmppMainPanelDelContace',function (data) {
-            util.confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？",function () {
-                xmppChat.del_contact(data.id);
+            util.confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？",function (flag) {
+                if(flag){
+                    xmppChat.del_contact(data.id);
+                }
             });
         });
         xmppChat.chatPanel.addHandler('xmppChatMainPanelAddContact',function (data) {
