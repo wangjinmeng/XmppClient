@@ -6,7 +6,7 @@ import $ from 'jquery';
 import ChatBox from '../chatBox/index';
 import util from '../../plugin/util/util'
 function getNode(name){
-    let nodeStr= `<div id="main-panel" class="chat-main-box contact-main-box js-xmpp-chat-panel-box">
+    let nodeStr= `<div id="main-panel" class="xmpp-box  js-xmpp-chat-panel-box">
                     <div class=" xmpp-box-shadow contact-wp pr js-xmpp-chat-panel">
                         <div class="contact-tt" popup-header>
                             <div class="contact-tt-name js-name">${name}</div>

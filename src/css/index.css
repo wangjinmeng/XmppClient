@@ -1,46 +1,47 @@
 /*------------------common start------------------*/
-*{
+.xmpp-box *{
     -weblot-box-sizing:border-box;
     -moz-box-sizing:border-box;
     -o-box-sizing:border-box;
     box-sizing:border-box;
-    margin:0;
-    padding:0;
 }
-ul, ol {
+.xmpp-box ul,
+.xmpp-box ol {
+    padding:0;
+    margin:0;
     list-style-type: none;
 }
-input,
-select,
-textarea {
+.xmpp-box input,
+.xmpp-box select,
+.xmpp-box textarea {
     outline: none;
     border: none;
     background: none;
 }
-textarea {
+.xmpp-box textarea {
     resize: none;
 }
-.fl {
+.xmpp-box .fl {
     float: left;
 }
-.fr {
+.xmpp-box .fr {
     float: right;
 }
-.fix:after {
+.xmpp-box .fix:after {
     content: "";
     clear: both;
     display: block
 }
-.dn {
+.xmpp-box .dn {
     display: none;
 }
-.pr{
+.xmpp-box .pr{
     position: relative;
 }
-.cursor-pointer{
+.xmpp-box .cursor-pointer{
     cursor: pointer;
 }
-.hidden{
+.xmpp-box .hidden{
     display: none;
 }
 .xmpp-close-btn {
@@ -55,7 +56,7 @@ textarea {
 .xmpp-box-shadow{
     box-shadow: 1px 1px 50px rgba(0,0,0,.3);
 }
-input.form-input {
+.xmpp-box input.form-input {
     height: 38px;
     line-height: 38px;
     border: 1px solid #e6e6e6;
@@ -65,10 +66,10 @@ input.form-input {
     border-radius: 2px;
     box-sizing: border-box;
 }
-input.form-input:focus {
+.xmpp-box input.form-input:focus {
     border-color: #C9C9C9 !important;
 }
-label.form-name {
+.xmpp-box label.form-name {
     height: 38px;
     line-height: 38px;
     font-size: 14px;
@@ -119,33 +120,14 @@ label.form-name {
     height: 50px;
 }
 /*------------------common end---------------*/
-.chat-name{
-    color: #c33;
-}
-.chat-message .me{
-    color: #33c;
-}
-.chat-event{
-    font-style: italic;
-    font-size: 75%;
-}
-.roster-contact{
-    padding: 3px;
-}
-.roster-contact:hover{
-    background-color: #aaaaaa;
-    color: white;
-}
-.roster-name{
-    font-size: 150%;
-}
-.online{
+
+.contact-list-item.online{
     color: #3c3;
 }
-.away{
+.contact-list-item.away{
     color: #c33;
 }
-.offline{
+.contact-list-item.offline{
     color: #cccccc;
     -webkit-filter: grayscale(100%);
     -moz-filter: grayscale(100%);
@@ -154,14 +136,10 @@ label.form-name {
     filter: grayscale(100%);
     filter: gray;
 }
-.chat-item-tab.on{
+.contact-list-item.chat-item-tab.on{
     background: #999;
 }
-.contact-main-box {
-    /*position: relative;*/
-    /*right:50px;*/
-    width: 310px;
-}
+
 .contact-wp {
     width: 260px;
     height: 520px;
@@ -178,14 +156,12 @@ label.form-name {
     height: 460px;
     position: relative;
 }
-
 .contact-list {
     position: absolute;
     top: 0;
     bottom: 40px;
     width: 100%;
 }
-
 .contact-list-item {
     position: relative;
     height: 42px;
@@ -193,11 +169,9 @@ label.form-name {
     font-size: 0;
     cursor: pointer;
 }
-
 .contact-list-item:hover {
     background-color: rgba(0,0,0,.05);
 }
-
 .contact-list-item .tt {
     position: absolute;
     left: 15px;
@@ -229,7 +203,6 @@ label.form-name {
     font-size: 14px;
     line-height: 36px;
 }
-
 .contact-list-item .del {
     height:  1em;
     width:  1em;

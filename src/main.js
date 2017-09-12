@@ -6,7 +6,7 @@ import chatMain from './js/index';
 import util from './plugin/util/util';
 import './css/index.css';
 var loginPopup= util.popup(`
-                         <div class="chat-tip-box xmpp-box-shadow chat-main-box">
+                         <div class="xmpp-box chat-tip-box xmpp-box-shadow chat-main-box">
                          <div class="chat-tip-tt" popup-header>登录
                          <a class="chat-tip-tt-handle"><span class="xmpp-close-btn" id="js-xmpp-tip-box-close">&times;</span></a>
                          </div>
@@ -20,7 +20,7 @@ var loginPopup= util.popup(`
                          <a id="js-xmpp-login" class="xmpp-button xmpp-button-main chat-tip-btn ">确定</a>
                          </div>
                          </div>`);
-var $initNode=$('<span class="xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
+var $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 $(document).on('click',"#js-xmpp-login",function(){
     var _jid=$.trim($('#js-jid').val());
     var _password=$.trim($('#js-password').val());

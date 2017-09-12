@@ -6,7 +6,7 @@ import chatBoxItem from '../chatBoxItem/index';
 import util from '../../plugin/util/util'
 import tt from '../../img/tt.jpg'
 function getNode(){
-    let nodeStr=`<div class="xmpp-chat-box pr xmpp-box-shadow js-xmpp-chat-box" >
+    let nodeStr=`<div class="xmpp-box xmpp-chat-box pr xmpp-box-shadow js-xmpp-chat-box" >
                     <ul class="xmpp-chat-box-slider js-xmpp-chat-box-slider"></ul>
                     <div class="js-xmpp-chat-box-main xmpp-chat-box-main"></div>
                 </div>`;

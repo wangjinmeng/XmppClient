@@ -15,7 +15,6 @@ if(process.env.NODE_ENV == "production"){
     devtool = "";
 }
 
-
 module.exports = {
     entry: __dirname+"/src/main.js",
     devtool:devtool,
