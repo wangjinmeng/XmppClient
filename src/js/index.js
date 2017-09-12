@@ -7,6 +7,7 @@ import util from '../plugin/util/util';
 import {Strophe,$iq,$msg,$pres} from 'strophe.js';
 import ChatPanel from '../component/chatPanel/index';
 let ttImg=require('../img/tt.jpg');
+import connectStatus from './connectStatus'
 let xmppChat={
     jid:'',
     name:'',
@@ -29,6 +30,7 @@ let xmppChat={
         },data);
         xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service);
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
+            util.toast(connectStatus[status]);
             if(status===Strophe.Status.CONNECTED){
                 xmppChat.name=data.jid;
                 xmppChat.jid=data.jid+'@'+xmppChat.domain;
