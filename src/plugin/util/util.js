@@ -663,5 +663,5 @@ var util = {
     showError:showError,
     additionErrorHandler:additionErrorHandler
 };
-window.util = util;
+
 export default  util;
