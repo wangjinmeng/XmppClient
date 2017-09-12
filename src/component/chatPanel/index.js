@@ -183,7 +183,6 @@ ChatMainPanel.prototype.receiveHistroyMsg=function (name,id,data) {
 ChatMainPanel.prototype.changeSelfStatus=function (status) {
     this.$node.find('.js-xmpp-chat-panel-change-status').val(status);
 };
-
 //展示正在输入状态
 ChatMainPanel.prototype.showStatus=function (id) {
     this.chatBox.showStatus(id)

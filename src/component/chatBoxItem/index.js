@@ -1,47 +1,45 @@
 /**
  * Created by wangjinmeng on 2017/9/8.
  */
-import './css/index.css'
 import $ from 'jquery';
 import tool from '../../js/tool'
 import richEdit from '../richEdit/index';
 import fromHtImg from './img/qq.jpg';
 import myHtImg from './img/tt.jpg';
-
 function getNode(name,id){
     let nodeStr=
         `<div class="js-xmpp-chat-box-item xmpp-chat-box-item" data-id="${id}">
             <div class="xmpp-chat-box-item-title fix" popup-header>
-                <div class="box-title-user-img fl user-img">
+                <div class="xmpp-chat-box-item-title-img box-title-user-img fl">
                     <img src="${myHtImg}" />
                 </div>
-                <div class="box-title-user-info fl">
+                <div class="xmpp-chat-box-item-title-info box-title-user-info fl">
                     <span class="name js-name">${name}</span>
                     <span class="status js-status  js-xmpp-chat-box-item-status" style="display: none">正在输入...</span>
                 </div>
             </div>
-            <div class="box-chat">
-                <div class="box-chat-main">
-                    <a class="js-xmpp-chat-box-item-query-history box-chat-query-history ">查看聊天记录</a>
+            <div class="xmpp-box-chat">
+                <div class="xmpp-box-chat-main">
+                    <a class="js-xmpp-chat-box-item-query-history xmpp-box-chat-query-history ">查看聊天记录</a>
                     <ul class="js-msg-box js-xmpp-chat-box-item-msg-box"></ul>
                 </div>
-                <div class="box-chat-footer pr fix">
+                <div class="xmpp-box-chat-footer pr fix">
                     <div class="js-xmpp-chat-box-item-text-area xmpp-chat-box-item-text-area"></div>
-                    <div class="xmpp-button xmpp-button-main box-chat-bottom js-xmpp-chat-box-item-send-msg-btn">发送</div>
+                    <div class="xmpp-button xmpp-button-main xmpp-box-chat-bottom js-xmpp-chat-box-item-send-msg-btn">发送</div>
                 </div>
             </div>
-            <div class="box-handle">
+            <div class="xmpp-box-handle">
                 <a class="xmpp-close-btn js-xmpp-chat-box-item-close">&times;</a>
             </div>
         </div>`;
     return $(nodeStr)
 }
 function getSendMsgNode(data,type){
-    let _sendNodeStr=`<li class="box-chat-mine fix">
-            <div class="box-chat-img user-img user-img-sm fr">
+    let _sendNodeStr=`<li class="xmpp-box-chat-mine fix">
+            <div class="xmpp-box-chat-img xmpp-user-img xmpp-user-img-sm fr">
                 <img src="${fromHtImg}" alt=""/>
             </div>
-            <div class="box-char-info">
+            <div class="xmpp-box-chat-info">
                 <div class="desc">
                     <span class="name">${data.name}</span>
                     <span class="time">${data.time}</span>
@@ -54,10 +52,10 @@ function getSendMsgNode(data,type){
         </li>`;
     let _receiveNodeStr=$(`
             <li class="fix">
-            <div class="box-chat-img user-img user-img-sm fl">
+            <div class="xmpp-box-chat-img xmpp-user-img xmpp-user-img-sm fl">
                 <img src="${myHtImg}" alt=""/>
             </div>
-            <div class="box-char-info">
+            <div class="xmpp-box-chat-info">
                 <div class="desc">
                     <span class="name">${data.name}</span>
                     <span class="time">${data.time}</span>

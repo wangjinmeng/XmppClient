@@ -233,6 +233,10 @@ let xmppChat={
         xmppChat.chatPanel.addHandler('xmppChatMainPanelChangeStatus',function (data) {
             xmppChat.change_status(data.status)
         });
+        xmppChat.chatPanel.addHandler('xmppChatMainPanelHide',function (data) {
+            // xmppChat.change_status(data.status);
+            xmppChat.$event.trigger('xmppChatHide')
+        });
     },
     storeMsg:{
         maxLen:500,
@@ -262,7 +266,4 @@ let xmppChat={
 };
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 export default xmppChat
-
-
-
 

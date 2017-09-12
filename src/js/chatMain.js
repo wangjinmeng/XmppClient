@@ -34,7 +34,6 @@ var flagMap={
     init:false
 };
 var jqueryMap={};
-
 //表单输入值事件:inputKeyPress; 1:按键按下，2:发送
 //查找聊天记录事件：queryHistory; jid:裸jid
 var chatBox={

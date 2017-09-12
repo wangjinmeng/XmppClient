@@ -1,21 +1,20 @@
 /**
  * Created by wangjinmeng on 2017/9/8.
  */
-import './css/index.css'
 import $ from 'jquery';
 import chatBoxItem from '../chatBoxItem/index';
 import util from '../../plugin/util/util'
 import tt from '../../img/tt.jpg'
 function getNode(){
-    let nodeStr=`<div class="chat-box pr chat-main-box xmpp-box-shadow js-xmpp-chat-box" >
-                    <ul class="chat-box-slider js-xmpp-chat-box-slider"></ul>
+    let nodeStr=`<div class="xmpp-chat-box pr xmpp-box-shadow js-xmpp-chat-box" >
+                    <ul class="xmpp-chat-box-slider js-xmpp-chat-box-slider"></ul>
                     <div class="js-xmpp-chat-box-main xmpp-chat-box-main"></div>
                 </div>`;
     return $(nodeStr)
 }
 function getSlideNode(name,domId){
     let nodeStr=`        
-        <li class="chat-box-slider-item js-xmpp-chat-box-slider-item" data-href="${domId}" id="${domId}-nav">
+        <li class="xmpp-chat-box-slider-item js-xmpp-chat-box-slider-item" data-href="${domId}" id="${domId}-nav">
             <img class="tt" src="${tt}">
             <span class="name">${name}</span>
             <span class="num js-xmpp-chat-box-slider-item-num hidden"></span>

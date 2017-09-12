@@ -1,5 +1,5 @@
 /*------------------common start------------------*/
-.chat-main-box *{
+*{
     -weblot-box-sizing:border-box;
     -moz-box-sizing:border-box;
     -o-box-sizing:border-box;
@@ -7,40 +7,40 @@
     margin:0;
     padding:0;
 }
-.chat-main-box ul, ol {
+ul, ol {
     list-style-type: none;
 }
-.chat-main-box input,
-.chat-main-box select,
-.chat-main-box textarea {
+input,
+select,
+textarea {
     outline: none;
     border: none;
     background: none;
 }
-.chat-main-box textarea {
+textarea {
     resize: none;
 }
-.chat-main-box .fl {
+.fl {
     float: left;
 }
-.chat-main-box .fr {
+.fr {
     float: right;
 }
-.chat-main-box .fix:after {
+.fix:after {
     content: "";
     clear: both;
     display: block
 }
-.chat-main-box .dn {
+.dn {
     display: none;
 }
-.chat-main-box .pr{
+.pr{
     position: relative;
 }
-.chat-main-box .cursor-pointer{
+.cursor-pointer{
     cursor: pointer;
 }
-.chat-main-box .hidden{
+.hidden{
     display: none;
 }
 .xmpp-close-btn {
@@ -52,7 +52,6 @@
 .xmpp-close-btn:hover {
     color: #000;
 }
-
 .xmpp-box-shadow{
     box-shadow: 1px 1px 50px rgba(0,0,0,.3);
 }
@@ -102,6 +101,22 @@ label.form-name {
 .xmpp-button.xmpp-button-warning{
     background: #cc0000;
     color: #fff;
+}
+
+.xmpp-user-img{
+    border-radius:50%;
+    overflow: hidden;
+}
+.xmpp-user-img>img{
+    width: 100%;
+}
+.xmpp-user-img-sm{
+    width: 36px;
+    height: 36px;
+}
+.xmpp-user-img-s{
+    width: 50px;
+    height: 50px;
 }
 /*------------------common end---------------*/
 .chat-name{
@@ -241,38 +256,28 @@ label.form-name {
     line-height: 30px;
     font-size: 24px;
 }
-.user-img{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-.user-img-sm{
-    width: 36px;
-    height: 36px;
-}
-.user-img>img{
-    width: 100%;
-}
-.chat-box{
+
+
+
+
+.xmpp-chat-box{
     width: 600px;
     background-image: url(../img/bg.jpg);
     background-color: #fff;
     background-size: cover;
     border-top: 3px solid #e6e6e6;
 }
-
-.chat-multiple-box .chat-box-slider{
-    display: block;
-}
-.chat-multiple-box.chat-box {
+.chat-multiple-box.xmpp-chat-box {
     width: 800px;
 }
-.chat-multiple-box .box-wp {
+.chat-multiple-box .xmpp-chat-box-slider{
+    display: block;
+}
+.chat-multiple-box .xmpp-chat-box-main {
     margin-left: 200px;
 }
 
-.chat-box-slider{
+.xmpp-chat-box-slider{
     width: 200px;
     display: none;
     height: 100%;
@@ -280,8 +285,9 @@ label.form-name {
     top: 0;
     bottom: 0;
     overflow: auto;
+    background: #D9D9D9;
 }
-.chat-box-slider-item {
+.xmpp-chat-box-slider-item {
     position: relative;
     margin: 5px;
     padding: 5px 30px 5px 5px;
@@ -289,23 +295,23 @@ label.form-name {
     border-radius: 3px;
     white-space: nowrap;
 }
-.chat-box-slider-item:hover{
+.xmpp-chat-box-slider-item:hover{
     background-color: #E2E2E2;
 }
-.chat-box-slider-item:hover .close{
+.xmpp-chat-box-slider-item:hover .close{
     display: inline-block;
 }
-.chat-box-slider-item.cur {
+.xmpp-chat-box-slider-item.cur {
     background: #f3f3f3;
 }
-.chat-box-slider-item .tt {
+.xmpp-chat-box-slider-item .tt {
     width: 40px;
     height: 40px;
     border-radius: 100%;
     vertical-align:middle;
 }
 
-.chat-box-slider-item .name {
+.xmpp-chat-box-slider-item .name {
     width: 100px;
     padding-left: 10px;
     font-size: 16px;
@@ -318,7 +324,7 @@ label.form-name {
 
 }
 
-.chat-box-slider-item .close{
+.xmpp-chat-box-slider-item .close{
     display: none;
     color: #fff;
     font-size: 20px;
@@ -330,36 +336,17 @@ label.form-name {
     text-align: center;
     vertical-align: middle;
 }
-.chat-box-slider-item .close:hover{
+.xmpp-chat-box-slider-item .close:hover{
     background: red;
 }
 
-.box-wp{
+
+.xmpp-chat-box-item{
     position: relative;
     height:100%;
     background: rgba(255,255,255,0.8);
 }
-.box-title{
-    /*height: 80px;*/
-    border-bottom: none;
-    background-color: #F8F8F8;
-    background-color: rgba(200,200,200,0.7);
-    padding: 15px;
-    cursor: move;
-}
-.box-title-user-info{
-    padding: 5px;
-    padding-left: 15px;
-}
-.box-title-user-info>span{
-    line-height: 20px;
-    font-size: 14px;
-    display: block;
-}
-.box-title-user-info .status{
-    color:#FF5722;
-}
-.box-handle{
+.xmpp-box-handle{
     position: absolute;
     top: 20px;
     right: 15px;
@@ -367,43 +354,69 @@ label.form-name {
     font-size: 24px;
     line-height: 1em;
 }
-.box-chat-main{
+.xmpp-chat-box-item-title{
+    border-bottom: none;
+    background-color: #F8F8F8;
+    background-color: rgba(200,200,200,0.7);
+    padding: 15px;
+    cursor: move;
+}
+.xmpp-chat-box-item-title-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.xmpp-chat-box-item-title-img > img{
+    width:100%;
+}
+.xmpp-chat-box-item-title-info{
+    padding: 5px;
+    padding-left: 15px;
+}
+.xmpp-chat-box-item-title-info>span{
+    line-height: 20px;
+    font-size: 14px;
+    display: block;
+}
+.xmpp-chat-box-item-title-info .status{
+    color:#FF5722;
+}
+.xmpp-box-chat-main{
     height: 262px;
     padding: 0 15px;
     overflow-x: hidden;
     overflow-y: auto;
     text-align: center
 }
-.box-chat-main li{
+.xmpp-box-chat-main li{
     width: 100%;
     height:auto;
     margin: 10px 0;
 }
-.box-chat-main .box-chat-img{
-}
-.box-char-info{
+.xmpp-box-chat-info{
     text-align: left;
     width:auto;
     margin-left: 51px;
 }
-.box-chat-mine .box-char-info{
+.xmpp-box-chat-mine .xmpp-box-chat-info{
     margin-left: 0;
     margin-right: 51px;
     text-align: right;
     color: #fff;
 }
-.box-char-info .desc{
+.xmpp-box-chat-info .desc{
     font-size: 12px;
     color: #999;
     line-height: 30px;
 }
-.box-char-info .desc .name{
+.xmpp-box-chat-info .desc .name{
     margin-right: 10px;
 }
-.box-chat-mine .box-char-info .desc  .name{
+.xmpp-box-chat-mine .xmpp-box-chat-info .desc .name{
     margin-left: 10px;
 }
-.box-char-info .msg{
+.xmpp-box-chat-info .msg{
     display: inline-block;
     background: #aaa;
     padding: 10px;
@@ -411,7 +424,7 @@ label.form-name {
     word-wrap: break-word;
     max-width: 480px;
 }
-.box-char-info .msg>span{
+.xmpp-box-chat-info .msg>span{
     width: 0;
     height: 0;
     border-left: 1em solid transparent;
@@ -420,10 +433,10 @@ label.form-name {
     left: -1em;
     top: 1em;
 }
-.box-chat-mine .box-char-info .msg{
+.xmpp-box-chat-mine .xmpp-box-chat-info .msg{
     background: #5fb878;
 }
-.box-chat-mine .box-char-info .msg>span{
+.xmpp-box-chat-mine .xmpp-box-chat-info .msg>span{
     width: 0;
     height: 0;
     border-left: none;
@@ -434,44 +447,39 @@ label.form-name {
     right: -1em;
     left: auto;
 }
-.box-chat-mine .box-char-info .msg img{
+.xmpp-box-chat-mine .xmpp-box-chat-info .msg img{
     max-width:100%;
     max-height:260px;
 }
-
-.box-chat-footer{
+.xmpp-box-chat-footer{
     /*height: 200px;*/
     border-top: 1px solid #ddd;
 }
-.box-chat-footer .default-text{
+.xmpp-box-chat-footer .default-text{
     position: absolute;
     top: 40px;
     left: 15px;
     color: #999;
 }
-.box-chat-tool{
+.xmpp-box-chat-tool{
     height: 38px;
     line-height: 38px;
 }
-.box-chat-query-history {
+.xmpp-box-chat-query-history {
     font-size: 12px;
     line-height:2;
     color: #5fb878;
     cursor: pointer;
 }
-.box-chat-textarea{
-    height: 100px;
-    display: block;
-    width: 100%;
-    padding: 0 15px;
-    font-size: 15px;
-    padding-top: 10px;
+.xmpp-chat-box-item-text-area{
+    height: 138px;
 }
-.box-chat-bottom{
+.xmpp-box-chat-bottom{
     float: right;
     margin-right: 15px;
     margin-bottom: 5px;
 }
+
 .contact-handle {
     position: absolute;
     bottom: 0;

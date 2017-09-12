@@ -35,9 +35,16 @@ chatMain.addHandler('xmppChatConnected',function(){
     util.hideLoading();
     loginPopup.close();
     $initNode.off('click.open-login');
+    $initNode.on('click.open-login',function () {
+        $initNode.hide();
+        chatMain.chatPanel.show();
+    });
 });
 chatMain.addHandler('xmppChatDisconnected',function(){
     util.hideLoading();
+});
+chatMain.addHandler('xmppChatHide',function(){
+    $initNode.show();
 });
 $(document).on('click',"#js-xmpp-tip-box-close",function(){
     loginPopup.hide();
