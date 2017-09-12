@@ -62,8 +62,11 @@ RichEdit.prototype.init =function () {
         _this.$event.trigger('xmppRichEditBlur');
     });
     _this.$qqFaceBtn.on('mousedown',function(){
-        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').slideToggle();
+        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').toggle();
         return false
+    });
+    $(document).on('mousedown',function(){
+        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').hide();
     });
     _this.$boldBtn.on('mousedown',function(){
         document.execCommand('bold',false,null);
@@ -75,7 +78,7 @@ RichEdit.prototype.init =function () {
         let _src=data.src;
         _this.$textarea.focus();
         document.execCommand('insertImage',false,_src);
-        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').slideToggle();
+        _this.$node.find('.js-xmpp-rich-edit-qq-face-box').toggle();
         return false
     });
 };

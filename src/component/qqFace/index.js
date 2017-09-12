@@ -29,10 +29,10 @@ QqFace.prototype.init = function(){
     })
 };
 QqFace.prototype.show=function () {
-    this.$node.slideUp()
+    this.$node.show()
 };
 QqFace.prototype.hide=function () {
-    this.$node.slideDown()
+    this.$node.hide()
 };
 QqFace.prototype.addHandle=function (eventName,fn) {
     let _this=this;

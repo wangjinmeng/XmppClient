@@ -23,7 +23,13 @@
 }
 .xmpp-rich-edit-qq-face-box{
     position: absolute;
-    bottom: 32px;
+    bottom: 120%;
+    margin-left: -200px;
+    left: 50%;
+    background: #fff;
+    padding: 10px;
+    border:1px solid #ddd;
+    box-shadow: 0 0 10px #999;
 }
 .xmpp-rich-edit-textarea{
     width:100%;
