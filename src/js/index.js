@@ -106,10 +106,12 @@ let xmppChat={
                         type:'subscribed'
                     }));
                 }else{
-                    util.confirm('接受'+_name +'发来的好友请求吗？',function () {
+                    util.confirm('接受'+_name +'发来的好友请求吗？',function (flag) {
                         //   接受处理
-                        xmppChat.accept_contact(_name,_fromJid);
-                        return true;
+                        if(flag){
+                            xmppChat.accept_contact(_name,_fromJid);
+                            return true;
+                        }
                     });
                 }
             }else if(_pType==='subscribed'){
