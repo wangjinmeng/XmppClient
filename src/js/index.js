@@ -16,6 +16,7 @@ let xmppChat={
     domain:'openfire.zhongqi.com',
     bosh_service:"http://192.168.3.28:7070/http-bind/",
     chatPanel:null,
+    initFlag:false,
     addHandler:function (eventName,fn) {
         this.$event.on(eventName,function (evt,data) {
             if($.isFunction(fn)){
@@ -32,11 +33,26 @@ let xmppChat={
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
             util.toast(connectStatus[status]);
             if(status===Strophe.Status.CONNECTED){
-                xmppChat.name=data.jid;
-                xmppChat.jid=data.jid+'@'+xmppChat.domain;
-                xmppChat.$event.trigger('xmppChatConnected');
+                if(!xmppChat.initFlag){
+                    xmppChat.initFlag=true;
+                    xmppChat.name=data.jid;
+                    xmppChat.jid=data.jid+'@'+xmppChat.domain;
+                    xmppChat.$event.trigger('xmppChatConnected');
+                }
+                document.cookie=JSON.stringify({
+                    jid:xmppChat.connection.jid,
+                    sid:xmppChat.connection._proto.sid,
+                    rid:xmppChat.connection._proto.rid
+                });
+                // return;
             }else if(status===Strophe.Status.AUTHFAIL){
                 xmppChat.$event.trigger('xmppChatDisconnected');
+            }else if(status===Strophe.Status.DISCONNECTED){
+                xmppChat.login({
+                    jid:xmppChat.jid,
+                    password:xmppChat.connection.pass
+                });
+                return
             }
         });
     },
@@ -271,5 +287,7 @@ let xmppChat={
     }
 };
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
+window.xmppChat=xmppChat;
+window.$pres=$pres;
 export default xmppChat
 
