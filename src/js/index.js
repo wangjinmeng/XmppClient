@@ -7,7 +7,8 @@ import util from '../plugin/util/util';
 import {Strophe,$iq,$msg,$pres} from 'strophe.js';
 import ChatPanel from '../component/chatPanel/index';
 let ttImg=require('../img/tt.jpg');
-import connectStatus from './connectStatus'
+import connectStatus from './connectStatus';
+var productName='即时通讯';
 let xmppChat={
     jid:'',
     name:'',
@@ -31,8 +32,9 @@ let xmppChat={
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
             if(status===Strophe.Status.CONNECTED){
                 xmppChat.$event.trigger('xmppChatConnected');
-                util.toast('链接成功');
+                util.toast('“'+productName+'”登录成功');
             }else if(status===Strophe.Status.AUTHFAIL){
+                util.toast('“'+productName+'”登录失败');
                 xmppChat.$event.trigger('xmppChatDisconnected');
             }else if(status===Strophe.Status.DISCONNECTED){
                 xmppChat.login({
@@ -325,7 +327,7 @@ $(document).on('click','[xmpp-data-chat]',function(){
             if($.isFunction($.redirectLogin)){
                 $.redirectLogin(location.href);
             }else{
-                util.toast('暂未登录');
+                util.toast('“'+productName+'”暂未登录');
             }
         }else{
             xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
