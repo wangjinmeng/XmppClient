@@ -10,14 +10,15 @@ let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="j
 function login() {
     var _name=util.getCookie("username");
     var _psd=util.getCookie("chatPwd");
-    if(_name===null||_psd===null){
+    if(_name&&_psd){
+        chatMain.login({
+            jid:util.getCookie("username"),
+            password:util.getCookie("chatPwd")
+        });
+    }else{
         chatMain.connectFail=true;
         return;
     }
-    chatMain.login({
-        jid:util.getCookie("username"),
-        password:util.getCookie("chatPwd")
-    });
 }
 chatMain.addHandler('xmppChatConnected',function(){
     $('body').append($initNode);
