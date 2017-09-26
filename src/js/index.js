@@ -322,7 +322,11 @@ $(document).on('click','[xmpp-data-chat]',function(){
     let _name=$(this).attr('xmpp-data-chat');
     if(_name){
         if(!xmppChat.jid){
-            util.toast('暂未登录');
+            if($.isFunction($.redirectLogin)){
+                $.redirectLogin(location.href);
+            }else{
+                util.toast('暂未登录');
+            }
         }else{
             xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
         }
