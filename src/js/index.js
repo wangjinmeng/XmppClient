@@ -336,7 +336,10 @@ $(document).on('click','[xmpp-data-chat]',function(){
     }else{
         if($.isFunction($.redirectLogin)){
             $.redirectLogin(location.href);
+        }else{
+            util.toast('“'+productName+'”未登陆，请先登录');
         }
+        return false
     }
 });
 export default xmppChat
