@@ -17,6 +17,8 @@ let xmppChat={
     domain:'openfire.zhongqi.com',
     bosh_service:"http://192.168.3.28:7070/http-bind/",
     chatPanel:null,
+    connectFail:false,//当connectFail为true表示 cookie和restore两种连接方式都失败
+    curConnectStatus:null,//当前的连接状态
     addHandler:function (eventName,fn) {
         this.$event.on(eventName,function (evt,data) {
             if($.isFunction(fn)){
@@ -30,9 +32,9 @@ let xmppChat={
             password:''
         },data);
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
+            xmppChat.curConnectStatus=status;
             if(status===Strophe.Status.CONNECTED){
                 xmppChat.$event.trigger('xmppChatConnected');
-                util.toast('“'+productName+'”登录成功');
             }else if(status===Strophe.Status.AUTHFAIL){
                 util.toast('“'+productName+'”登录失败');
                 xmppChat.$event.trigger('xmppChatDisconnected');
@@ -54,20 +56,19 @@ let xmppChat={
             }else if(status===Strophe.Status.CONNFAIL){
                 clearTimeout(timer);
                 sessionStorage.removeItem("xmppCache");
-                console.log('链接失败');
             }
         });
     },
     restore:function (failFun) {
         var timer=null;
         xmppChat.connection.restore(null,function(status){
+            xmppChat.curConnectStatus=status;
             if(status===Strophe.Status.ATTACHED){
                 timer=setTimeout(function () {
                     xmppChat.$event.trigger('xmppChatConnected');
                 },1000)
             }else if(status===Strophe.Status.CONNFAIL){
                 clearTimeout(timer);
-                console.log('链接失败');
                 if($.isFunction(failFun)){
                     failFun()
                 }
@@ -88,12 +89,8 @@ let xmppChat={
             xmppChat.chatPanel.addContact(_name?_name:Strophe.getNodeFromJid(_jid),_jid,_img,_subscript);
         });
         xmppChat.change_status('offline');
-        setTimeout(function () {
-            xmppChat.change_status('online');
-        },2000)
     },
     on_message:function (msg) {
-        console.log(msg);
         let $msg=$(msg);
         let _$msgItem=$msg.find('body');
         let _$composing=$msg.find('composing');
@@ -224,7 +221,6 @@ let xmppChat={
         return true
     },
     accept_contact:function(name,id){
-        console.log(id);
         xmppChat.connection.send($pres({
             to:id,
             type:'subscribed'
@@ -238,7 +234,7 @@ let xmppChat={
     change_status:function (status) {
         var _pre;
         if(status=='online'){
-            _pre=$pres()
+            _pre=$pres();
         }else if(status=='offline'){
             _pre=$pres({
                 type:'unavailable'
@@ -291,6 +287,7 @@ let xmppChat={
             // xmppChat.change_status(data.status);
             xmppChat.$event.trigger('xmppChatHide')
         });
+
     },
     storeMsg:{
         maxLen:500,
@@ -321,21 +318,24 @@ let xmppChat={
 xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 $(document).on('click','[xmpp-data-chat]',function(){
-    let _name=$(this).attr('xmpp-data-chat');
-    if(_name){
-        if(!xmppChat.jid){
-            if($.isFunction($.redirectLogin)){
-                $.redirectLogin(location.href);
-            }else{
-                util.toast('“'+productName+'”暂未登录');
+    if(!xmppChat.connectFail){
+        let _name=$(this).attr('xmpp-data-chat');
+        if(_name){
+            if(xmppChat.curConnectStatus===Strophe.Status.CONNECTED||xmppChat.curConnectStatus===Strophe.Status.ATTACHED){//登陆成功或者已经连接
+                xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
+            }else if(xmppChat.curConnectStatus===Strophe.Status.CONNECTING){//正在登陆中
+                util.toast('“'+productName+'”正在登陆');
+            }else if(xmppChat.curConnectStatus===Strophe.Status.CONNFAIL){//登陆失败
+                return true;
             }
+            return false;
         }else{
-            xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
+            util.toast('用户不存在');
         }
     }else{
-        util.toast('用户不存在')
+        if($.isFunction($.redirectLogin)){
+            $.redirectLogin(location.href);
+        }
     }
-    return false
 });
-
 export default xmppChat

@@ -11,6 +11,7 @@ function login() {
     var _name=util.getCookie("username");
     var _psd=util.getCookie("chatPwd");
     if(!(_name||_psd)){
+        chatMain.connectFail=true;
         return;
     }
     chatMain.login({

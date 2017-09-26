@@ -583,7 +583,6 @@ function confirm(msg, callback){
  * @returns {{}}
  */
 
-
 function formData(form){
     var $form = $(form);
     var data = {};
@@ -647,7 +646,6 @@ function showError(error){
         type:"error"
     });
 }
-
 // 添加Cookie
 function addCookie(name, value, options) {
     if (arguments.length > 1 && name != null) {
@@ -665,7 +663,6 @@ function addCookie(name, value, options) {
         document.cookie = encodeURIComponent(String(name)) + "=" + encodeURIComponent(String(value)) + (options.expires ? "; expires=" + options.expires.toUTCString() : "") + (options.path ? "; path=" + options.path : "") + (options.domain ? "; domain=" + options.domain : ""), (options.secure ? "; secure" : "");
     }
 }
-
 // 获取Cookie
 function getCookie(name) {
     if (name != null) {
@@ -673,12 +670,10 @@ function getCookie(name) {
         return value ? decodeURIComponent(value[1]) : null;
     }
 }
-
 // 移除Cookie
 function removeCookie(name, options) {
     addCookie(name, null, options);
 }
-
 //工具对象
 var util = {
     showLoading:showLoading,
@@ -698,5 +693,6 @@ var util = {
     addCookie:addCookie,
     removeCookie:removeCookie
 };
+window.util=util
 
 export default  util;
