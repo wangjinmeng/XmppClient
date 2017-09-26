@@ -7,7 +7,6 @@ import { Strophe } from "strophe.js";
 //连接状态翻译
 const Status = Strophe.Status;
 const statusMap = {
-
 };
 statusMap[Status.ERROR] = "发生了一个错误";
 statusMap[Status.CONNECTING] = "当前正在连接";

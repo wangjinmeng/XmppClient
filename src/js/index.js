@@ -16,7 +16,6 @@ let xmppChat={
     domain:'openfire.zhongqi.com',
     bosh_service:"http://192.168.3.28:7070/http-bind/",
     chatPanel:null,
-    initFlag:false,
     addHandler:function (eventName,fn) {
         this.$event.on(eventName,function (evt,data) {
             if($.isFunction(fn)){
@@ -29,32 +28,54 @@ let xmppChat={
             jid:'',
             password:''
         },data);
-        xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service);
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
             util.toast(connectStatus[status]);
             if(status===Strophe.Status.CONNECTED){
-                if(!xmppChat.initFlag){
-                    xmppChat.initFlag=true;
-                    xmppChat.name=data.jid;
-                    xmppChat.jid=data.jid+'@'+xmppChat.domain;
                     xmppChat.$event.trigger('xmppChatConnected');
-                }
-                document.cookie=JSON.stringify({
-                    jid:xmppChat.connection.jid,
-                    sid:xmppChat.connection._proto.sid,
-                    rid:xmppChat.connection._proto.rid
-                });
-                // return;
             }else if(status===Strophe.Status.AUTHFAIL){
                 xmppChat.$event.trigger('xmppChatDisconnected');
             }else if(status===Strophe.Status.DISCONNECTED){
                 xmppChat.login({
-                    jid:xmppChat.jid,
+                    jid:xmppChat.connection.jid,
                     password:xmppChat.connection.pass
                 });
-                return
             }
         });
+    },
+    attach:function (data) {
+        let timer=null;
+        xmppChat.connection.attach(data.jid,data.sid,data.rid,function(status){
+            if(status===Strophe.Status.ATTACHED){
+                timer=setTimeout(function () {
+                    xmppChat.$event.trigger('xmppChatConnected');
+                },1000)
+            }else if(status===Strophe.Status.CONNFAIL){
+                clearTimeout(timer);
+                sessionStorage.removeItem("xmppCache");
+                console.log('链接失败');
+            }
+        });
+    },
+    restore:function (failFun) {
+        var timer=null;
+        xmppChat.connection.restore(null,function(status){
+            if(status===Strophe.Status.ATTACHED){
+                timer=setTimeout(function () {
+                    xmppChat.$event.trigger('xmppChatConnected');
+                },1000)
+            }else if(status===Strophe.Status.CONNFAIL){
+                clearTimeout(timer);
+                console.log('链接失败');
+                if($.isFunction(failFun)){
+                    failFun()
+                }
+            }else if(status===Strophe.Status.DISCONNECTED){
+                xmppChat.login({
+                    jid:xmppChat.connection.jid,
+                    password:xmppChat.connection.pass
+                });
+            }
+        })
     },
     on_roster:function (iq) {
         $(iq).find('item').each(function (){
@@ -65,7 +86,11 @@ let xmppChat={
             xmppChat.chatPanel.addContact(_name?_name:Strophe.getNodeFromJid(_jid),_jid,_img,_subscript);
         });
         xmppChat.chatPanel.show();
-        xmppChat.connection.send($pres());
+        xmppChat.change_status('online');
+
+        setTimeout(function () {
+            xmppChat.change_status('offline');
+        },1000)
     },
     on_message:function (msg) {
         console.log(msg);
@@ -98,7 +123,6 @@ let xmppChat={
         return true;
     },
     on_presence:function (pre) {
-        console.log(pre);
         let $pre=$(pre);
         let _pType=$pre.attr('type');
         let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
@@ -106,6 +130,7 @@ let xmppChat={
         if(_fromJid==xmppChat.jid){
             //此处处理与自己相关的出席通知
             // debugger;
+            console.log(_pType)
             if(_pType){
                 _pType=_pType=='unavailable'?'offline':_pType
             }else {
@@ -224,12 +249,14 @@ let xmppChat={
         xmppChat.connection.send(_pre);
     },
     init:function(){
+        xmppChat.name=Strophe.getNodeFromJid(xmppChat.connection.jid);
+        xmppChat.jid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
         xmppChat.connection.addHandler(xmppChat.on_message,null,'message');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');
-        xmppChat.chatPanel=ChatPanel(xmppChat.name,xmppChat.jid);
+        xmppChat.chatPanel=ChatPanel(Strophe.getNodeFromJid(xmppChat.connection.jid),xmppChat.connection.jid);
         xmppChat.chatPanel.addHandler('xmppChatPanelSendMsg',function(data){
             xmppChat.send_message('chat',data);
         });
@@ -286,8 +313,8 @@ let xmppChat={
         }
     }
 };
+xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 window.xmppChat=xmppChat;
 window.$pres=$pres;
 export default xmppChat
-

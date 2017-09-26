@@ -34,4 +34,6 @@
 .xmpp-rich-edit-textarea{
     width:100%;
     height: 100px;
+    overflow-x: auto;
+    padding: 0 8px;
 }

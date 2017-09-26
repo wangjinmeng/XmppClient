@@ -144,12 +144,14 @@
     width: 260px;
     height: 520px;
     background: #fff;
+    margin-right: 50px;
 }
 .contact-tt {
     height: 60px;
     line-height: 60px;
     padding-left: 20px;
     background: #ddd;
+    cursor: pointer;
 }
 .contact-cont {
     overflow: hidden;
