@@ -19,6 +19,7 @@ let xmppChat={
     chatPanel:null,
     connectFail:false,//当connectFail为true表示 cookie和restore两种连接方式都失败
     curConnectStatus:null,//当前的连接状态
+    isConnected:false,
     addHandler:function (eventName,fn) {
         this.$event.on(eventName,function (evt,data) {
             if($.isFunction(fn)){
@@ -287,7 +288,7 @@ let xmppChat={
             // xmppChat.change_status(data.status);
             xmppChat.$event.trigger('xmppChatHide')
         });
-
+        xmppChat.isConnected=true;
     },
     storeMsg:{
         maxLen:500,
@@ -319,19 +320,19 @@ xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': t
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 $(document).on('click','[xmpp-data-chat]',function(){
     if(!xmppChat.connectFail){
-        let _name=$(this).attr('xmpp-data-chat');
-        if(_name){
-            if(xmppChat.curConnectStatus===Strophe.Status.CONNECTED||xmppChat.curConnectStatus===Strophe.Status.ATTACHED){//登陆成功或者已经连接
+        if(xmppChat.isConnected){//登陆成功或者已经连接
+            let _name=$(this).attr('xmpp-data-chat');
+            if(_name){
                 xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
-            }else if(xmppChat.curConnectStatus===Strophe.Status.CONNECTING){//正在登陆中
-                util.toast('“'+productName+'”正在登陆');
-            }else if(xmppChat.curConnectStatus===Strophe.Status.CONNFAIL){//登陆失败
-                return true;
+            }else{
+                util.toast('用户不存在');
             }
-            return false;
-        }else{
-            util.toast('用户不存在');
+        }else if(xmppChat.curConnectStatus===Strophe.Status.CONNFAIL){//登陆失败
+            return true;
+        }else{//其他登陆状态
+            util.toast('“'+productName+'”正在登陆');
         }
+        return false;
     }else{
         if($.isFunction($.redirectLogin)){
             $.redirectLogin(location.href);
