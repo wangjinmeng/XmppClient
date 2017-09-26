@@ -17,6 +17,9 @@ function getNode(name,id){
                     <span class="name js-name">${name}</span>
                     <span class="status js-status  js-xmpp-chat-box-item-status" style="display: none">正在输入...</span>
                 </div>
+                <div class="xmpp-chat-box-item-add  hidden">
+                    <a class="xmpp-button xmpp-button-warning js-xmpp-chat-box-item-add-btn" style="font-size:12px;margin-top:3px">添加为好友</a>
+                </div>
             </div>
             <div class="xmpp-box-chat">
                 <div class="xmpp-box-chat-main">
@@ -80,18 +83,26 @@ function getSendMsgNode(data,type){
     xmppChatBoxItemFocus:输入框获得焦点
     xmppChatBoxItemBlur:输入框失去焦点
  */
-let ChatBoxItem=function (name,id) {
+let ChatBoxItem=function (name,id,flag) {
     this.$node=null;
     this.name=name;
     this.id=id;
     this.richEdit=null;
     this.scrollTimer=null;
-    this.$event=$('<div></div>')
+    this.$event=$('<div></div>');
+    this.isFriendFlag=flag
 };
 ChatBoxItem.prototype.init=function () {
     let _this=this;
     _this.richEdit=richEdit();
     _this.$node=getNode(_this.name,_this.id);
+    if(!_this.isFriendFlag){
+        _this.$node.find('.xmpp-chat-box-item-add').removeClass('hidden');
+        _this.$node.find('.js-xmpp-chat-box-item-add-btn').on('click',function(){
+            $(this).remove();
+            _this.$event.trigger('xmppChatBoxItemAdd',{id:_this.id,name:_this.name});
+        })
+    }
     _this.$node.find('.js-xmpp-chat-box-item-text-area').append(_this.richEdit.$node);
     _this.$node.find('.js-xmpp-chat-box-item-send-msg-btn').on('click',function(){
         let _text=_this.richEdit.getText();
@@ -167,8 +178,8 @@ ChatBoxItem.prototype.addHandler=function (eventName,fn) {
         }
     })
 };
-function plugIn(name,id){
-    let chatBox=new ChatBoxItem(name,id);
+function plugIn(name,id,flag){
+    let chatBox=new ChatBoxItem(name,id,flag);
     chatBox.init();
     return chatBox;
 }

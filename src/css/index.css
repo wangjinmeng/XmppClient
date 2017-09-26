@@ -100,7 +100,7 @@
     color: #666;
 }
 .xmpp-button.xmpp-button-warning{
-    background: #cc0000;
+    background: #cc4d4c;
     color: #fff;
 }
 
@@ -151,7 +151,7 @@
     line-height: 60px;
     padding-left: 20px;
     background: #ddd;
-    cursor: pointer;
+    cursor:move;
 }
 .contact-cont {
     overflow: hidden;

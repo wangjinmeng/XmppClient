@@ -697,5 +697,6 @@ var util = {
     getCookie:getCookie,
     removeCookie:removeCookie
 };
+window.util=util
 
 export default  util;

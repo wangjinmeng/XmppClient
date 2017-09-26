@@ -8,32 +8,23 @@ import loginBox from './component/loginBox/index'
 import './css/index.css';
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 $('body').append($initNode);
-
 function login() {
-    loginBox.addHandler('xmppLoginClick',function (data) {
-        if(!data.jid||!data.password){
-            util.toast('请填写完整');
-            return
-        }
-        util.showLoading();
-        chatMain.login(data)
-    });
-    loginBox.addHandler('xmppLoginClose',function () {
-        console.log('close');
-        loginBox.hide();
-        $initNode.show();
+    var _name=util.getCookie("username");
+    var _psd=util.getCookie("chatPwd");
+    if(!(_name||_psd)){
+        return;
+    }
+    util.showLoading();
+    chatMain.login({
+        jid:util.getCookie("username"),
+        password:util.getCookie("chatPwd")
     });
     chatMain.addHandler('xmppChatConnected',function(){
+        $initNode.show();
         util.hideLoading();
-        loginBox.close();
-        $initNode.off('click.open-login');
     });
     chatMain.addHandler('xmppChatDisconnected',function(){
         util.hideLoading();
-    });
-    $initNode.on('click.open-login',function () {
-        loginBox.open();
-        $initNode.hide();
     });
 }
 chatMain.addHandler('xmppChatConnected',function(){

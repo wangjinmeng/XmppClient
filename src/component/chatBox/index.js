@@ -42,10 +42,10 @@ ChatBox.prototype.init=function () {
     _this.$node=getNode();
     _this.popup=util.popup(_this.$node);
 };
-ChatBox.prototype.initChatBoxItem=function (name,id) {
+ChatBox.prototype.initChatBoxItem=function (name,id,flag) {
     var _this=this;
     var domId=idToDomId(id)
-    var _chatBoxItem=chatBoxItem(name,id);
+    var _chatBoxItem=chatBoxItem(name,id,flag);
     var _slideNavNode=getSlideNode(name,domId);
     _slideNavNode.on('click',function(){
         _this.chatBoxItemsCache[id].show();
@@ -84,9 +84,11 @@ ChatBox.prototype.initChatBoxItem=function (name,id) {
         },
         pattern:false//状态，是否从对话框中关闭:false,开启:true
     };
+    _chatBoxItem.addHandler('xmppChatBoxItemAdd',function (data) {
+        _this.$event.trigger('xmppChatBoxAdd',data)
+    });
     //关闭单个对话框
     _chatBoxItem.addHandler('xmppChatBoxItemClose',function (data) {
-
         _this.chatBoxItemsCache[data.id].close();
     });
     //发送消息
@@ -106,10 +108,11 @@ ChatBox.prototype.initChatBoxItem=function (name,id) {
         _this.$event.trigger('xmppChatBoxBlur',data)
     });
 };
-ChatBox.prototype.showItem=function (name,id) {
+//showItem 第三个参数表示是否是好友，如果不是好友则需要显示添加好友按钮
+ChatBox.prototype.showItem=function (name,id,flag) {
     var _this=this;
     if(!_this.chatBoxItemsCache[id]){
-        _this.initChatBoxItem(name,id);
+        _this.initChatBoxItem(name,id,flag);
     }
     this.chatBoxItemsCache[id].show();
     if(!_this.openStatus){

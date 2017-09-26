@@ -85,12 +85,10 @@ let xmppChat={
             let _img=ttImg;
             xmppChat.chatPanel.addContact(_name?_name:Strophe.getNodeFromJid(_jid),_jid,_img,_subscript);
         });
-        xmppChat.chatPanel.show();
-        xmppChat.change_status('online');
-
+        xmppChat.change_status('offline');
         setTimeout(function () {
-            xmppChat.change_status('offline');
-        },1000)
+            xmppChat.change_status('online');
+        },2000)
     },
     on_message:function (msg) {
         console.log(msg);
@@ -128,15 +126,17 @@ let xmppChat={
         let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
         let _name=Strophe.getNodeFromJid(_fromJid);
         if(_fromJid==xmppChat.jid){
+            console.log(pre)
             //此处处理与自己相关的出席通知
-            // debugger;
-            console.log(_pType)
-            if(_pType){
-                _pType=_pType=='unavailable'?'offline':_pType
-            }else {
-                _pType='online';
+            if(_pType!=='error'&&_pType!=='subscribe'&&_pType!=='subscribed'){
+                if(_pType){
+                    _pType='offline';
+                }else if(!_pType){
+                    var show=$pre.find('show').text();
+                    _pType=show?'away':'online';
+                }
+                xmppChat.chatPanel.changeSelfStatus(_pType);
             }
-            xmppChat.chatPanel.changeSelfStatus(_pType=='unavailable'?'offline':_pType);
         }else{
             if(_pType==='subscribe'){
                 //收到订阅通知出席通知
@@ -213,14 +213,14 @@ let xmppChat={
         let res=xmppChat.chatPanel.addContact(data.name,data.jid,ttImg,'none');//添加好友失败返回false
         if(!res) {
             util.toast('请勿重复添加');
-            return
+            return false
         }
-        xmppChat.chatPanel.addContactPopup.close();
         let iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',data);
         xmppChat.connection.sendIQ(iq);
         let subscribe=$pres({to:data.jid,'type':'subscribe'});
         xmppChat.connection.send(subscribe);
         util.toast('发送成功,等待对方确认');
+        return true
     },
     accept_contact:function(name,id){
         console.log(id);
@@ -235,7 +235,6 @@ let xmppChat={
         xmppChat.chatPanel.addContact(name,id,ttImg,'both')
     },
     change_status:function (status) {
-        console.log(status);
         var _pre;
         if(status=='online'){
             _pre=$pres()
@@ -269,6 +268,9 @@ let xmppChat={
         xmppChat.chatPanel.addHandler('xmppChatPanelQueryHistory',function (data) {
             xmppChat.chatPanel.receiveHistroyMsg(Strophe.getNodeFromJid(data.id),data.id,xmppChat.storeMsg.get(data.id))
         });
+        xmppChat.chatPanel.addHandler('xmppChatPanelAdd',function (data) {
+            xmppChat.add_contact(data);
+        });
         xmppChat.chatPanel.addHandler('xmppMainPanelDelContace',function (data) {
             util.confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？",function (flag) {
                 if(flag){
@@ -277,7 +279,9 @@ let xmppChat={
             });
         });
         xmppChat.chatPanel.addHandler('xmppChatMainPanelAddContact',function (data) {
-            xmppChat.add_contact(data)
+            if(xmppChat.add_contact(data)){
+                xmppChat.chatPanel.addContactPopup.close();
+            }
         });
         xmppChat.chatPanel.addHandler('xmppChatMainPanelChangeStatus',function (data) {
             xmppChat.change_status(data.status)
@@ -315,6 +319,28 @@ let xmppChat={
 };
 xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
-window.xmppChat=xmppChat;
-window.$pres=$pres;
+$(document).on('click','[xmpp-data-chat]',function(){
+    let _name=$(this).attr('xmpp-data-chat');
+    if(!_name) return;
+    if(!xmppChat.jid){
+        util.toast('暂未登录');
+        return
+    }
+    xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
+    return false
+});
+$(document).on('click','[xmpp-data-add]',function(){
+    let _name=$(this).attr('xmpp-data-add');
+    if(!_name) return;
+    if(!xmppChat.jid){
+        util.toast('暂未登录');
+        return
+    }
+    xmppChat.add_contact({
+        name:_name,
+        id:_name+'@'+xmppChat.domain
+    });
+    return false
+});
+
 export default xmppChat

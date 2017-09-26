@@ -21,7 +21,7 @@ function getNode(name){
                         </div>
                         <div class="contact-cont">
                             <div class="contact-list js-xmpp-chat-panel-contact-list"></div>
-                            <div class="contact-handle">
+                            <div class="contact-handle hidden">
                                 <a class="cursor-pointer js-xmpp-chat-panel-add-contact">+</a>
                             </div>
                         </div>
@@ -91,6 +91,7 @@ let ChatMainPanel=function (name,id) {
     this.chatBox=null;
     this.addContactPopup=null;
 };
+
 ChatMainPanel.prototype.init=function () {
     let _this=this;
     _this.chatBox=ChatBox();
@@ -113,7 +114,7 @@ ChatMainPanel.prototype.init=function () {
     _this.$node.on('click','.js-contact-items',function () {
         let _name=$(this).attr('data-name');
         let _id=$(this).attr('data-jid');
-        _this.chatBox.showItem(_name,_id);
+        _this.showItem(_name,_id);
         $(this).find('.js-num').html('0').hide();
         return false;
     });
@@ -136,6 +137,9 @@ ChatMainPanel.prototype.init=function () {
     _this.chatBox.addHandler('xmppChatBoxQueryHistory',function (data) {
         _this.$event.trigger('xmppChatPanelQueryHistory',data)
     });
+    _this.chatBox.addHandler('xmppChatBoxAdd',function (data) {
+        _this.$event.trigger('xmppChatPanelAdd',data)
+    });
 
 };
 ChatMainPanel.prototype.show=function () {
@@ -143,6 +147,13 @@ ChatMainPanel.prototype.show=function () {
 };
 ChatMainPanel.prototype.hide=function () {
     this.popup.hide();
+};
+ChatMainPanel.prototype.showItem=function (name,id) {
+    var _flag=false;
+    if(this.contactListCache[id]){
+        _flag=true
+    }
+    this.chatBox.showItem(name,id,_flag);
 };
 ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
     let _this=this;
