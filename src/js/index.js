@@ -29,9 +29,9 @@ let xmppChat={
             password:''
         },data);
         xmppChat.connection.connect(data.jid+'@'+xmppChat.domain,data.password,function (status) {
-            util.toast(connectStatus[status]);
             if(status===Strophe.Status.CONNECTED){
-                    xmppChat.$event.trigger('xmppChatConnected');
+                xmppChat.$event.trigger('xmppChatConnected');
+                util.toast('链接成功');
             }else if(status===Strophe.Status.AUTHFAIL){
                 xmppChat.$event.trigger('xmppChatDisconnected');
             }else if(status===Strophe.Status.DISCONNECTED){
@@ -126,7 +126,6 @@ let xmppChat={
         let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
         let _name=Strophe.getNodeFromJid(_fromJid);
         if(_fromJid==xmppChat.jid){
-            console.log(pre)
             //此处处理与自己相关的出席通知
             if(_pType!=='error'&&_pType!=='subscribe'&&_pType!=='subscribed'){
                 if(_pType){
@@ -321,25 +320,15 @@ xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': t
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 $(document).on('click','[xmpp-data-chat]',function(){
     let _name=$(this).attr('xmpp-data-chat');
-    if(!_name) return;
-    if(!xmppChat.jid){
-        util.toast('暂未登录');
-        return
+    if(_name){
+        if(!xmppChat.jid){
+            util.toast('暂未登录');
+        }else{
+            xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
+        }
+    }else{
+        util.toast('用户不存在')
     }
-    xmppChat.chatPanel.showItem(_name,_name+'@'+xmppChat.domain);
-    return false
-});
-$(document).on('click','[xmpp-data-add]',function(){
-    let _name=$(this).attr('xmpp-data-add');
-    if(!_name) return;
-    if(!xmppChat.jid){
-        util.toast('暂未登录');
-        return
-    }
-    xmppChat.add_contact({
-        name:_name,
-        id:_name+'@'+xmppChat.domain
-    });
     return false
 });
 

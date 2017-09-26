@@ -695,6 +695,7 @@ var util = {
     showError:showError,
     additionErrorHandler:additionErrorHandler,
     getCookie:getCookie,
+    addCookie:addCookie,
     removeCookie:removeCookie
 };
 window.util=util
