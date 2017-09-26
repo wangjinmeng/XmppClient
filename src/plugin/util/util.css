@@ -134,6 +134,10 @@
     margin:auto;
 }
 
+.util-dialog-tool:after{
+    content:"";
+}
+
 .util-dialog-fullscreen{
     display:inline-block;
     vertical-align:middle;
@@ -188,6 +192,10 @@
     text-align:center;
 }
 
+.util-dialog-footer:after{
+    content:"";
+
+}
 
 .util-dialog-btn{
     display:inline-block;
@@ -200,7 +208,7 @@
     font-size:14px;
     text-align:center;
     padding:0px 20px;
-    margin-right:20px;
+    margin:0px 20px;
     text-decoration:none;
 }
 
