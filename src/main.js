@@ -8,14 +8,15 @@ import loginBox from './component/loginBox/index'
 import './css/index.css';
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 function login() {
-    var _name=util.getCookie("username");
-    var _psd=util.getCookie("chatPwd");
-    if(_name&&_psd){
-        chatMain.login({
-            jid:util.getCookie("username"),
-            password:util.getCookie("chatPwd")
+    console.log('登陆中。。。');
+    if($.trim($.imProSessionData) != ""){
+        var _sessionData=$.parseJSON(decodeURIComponent($.imProSessionData));
+        chatMain.attach({
+            jid:_sessionData.username,
+            rid:_sessionData.rid,
+            sid:_sessionData.sid
         });
-    }else{
+    }else {
         chatMain.connectFail=true;
         return;
     }

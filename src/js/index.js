@@ -342,4 +342,5 @@ $(document).on('click','[xmpp-data-chat]',function(){
         return false
     }
 });
+window.xmppChat=xmppChat;
 export default xmppChat
