@@ -33,9 +33,8 @@ Logger.prototype.logLevel = globalLogLevel;
  */
 Logger.prototype.log = function(msg){
     if(this.logLevel >= LevelType.info){
-        console.log("["+this.name+" log ] - " + msg);
+        console.log("["+this.name+" log ] " , msg);
     }
-
 }
 
 

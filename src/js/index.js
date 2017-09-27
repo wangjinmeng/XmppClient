@@ -8,6 +8,8 @@ import {Strophe,$iq,$msg,$pres} from 'strophe.js';
 import ChatPanel from '../component/chatPanel/index';
 let ttImg=require('../img/tt.jpg');
 import connectStatus from './connectStatus';
+import {Logger} from './logger'
+var logger=new Logger('chatMain');
 var productName='即时通讯';
 let xmppChat={
     jid:'',
@@ -246,6 +248,7 @@ let xmppChat={
         xmppChat.connection.send(_pre);
     },
     init:function(){
+        logger.log(xmppChat.connection);
         xmppChat.name=Strophe.getNodeFromJid(xmppChat.connection.jid);
         xmppChat.jid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});

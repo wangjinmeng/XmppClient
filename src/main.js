@@ -6,17 +6,21 @@ import chatMain from './js/index';
 import util from './plugin/util/util';
 import loginBox from './component/loginBox/index'
 import './css/index.css';
+import {Logger} from './js/logger'
+var logger=new Logger('main');
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 function login() {
-    console.log('登陆中。。。');
+    logger.log('执行restore失败尝试 attach')
     if($.isFunction($.internalImLogin)){
         $.internalImLogin().then(function (data) {
-            if($.isPlainObject(data)&&data.sid){
+            if(data.status==='success'){
                 chatMain.attach({
                     jid:data.username,
                     rid:data.rid,
                     sid:data.sid
                 });
+            }else if(data.status==='failed'){
+                logger.log('后台登录失败！！！')
             }else{
                 xmppChat.connectFail=true;
                 return;
