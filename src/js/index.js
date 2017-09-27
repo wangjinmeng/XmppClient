@@ -319,7 +319,14 @@ let xmppChat={
 xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 $(document).on('click','[xmpp-data-chat]',function(){
-    if(!xmppChat.connectFail){
+    if(xmppChat.connectFail){
+        if($.isFunction($.redirectLogin)){
+            $.redirectLogin(location.href,'请先登录,才能联系商家');
+        }else{
+            util.toast('“'+productName+'”未登陆，请先登录');
+        }
+        return false
+    }else{
         if(xmppChat.isConnected){//登陆成功或者已经连接
             let _name=$(this).attr('xmpp-data-chat');
             if(_name){
@@ -333,13 +340,6 @@ $(document).on('click','[xmpp-data-chat]',function(){
             util.toast('“'+productName+'”正在登陆');
         }
         return false;
-    }else{
-        if($.isFunction($.redirectLogin)){
-            $.redirectLogin(location.href,'请先登录,才能联系商家');
-        }else{
-            util.toast('“'+productName+'”未登陆，请先登录');
-        }
-        return false
     }
 });
 window.xmppChat=xmppChat;
