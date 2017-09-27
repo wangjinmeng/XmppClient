@@ -9,16 +9,28 @@ import './css/index.css';
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 function login() {
     console.log('登陆中。。。');
-    if($.trim($.imProSessionData) != ""){
-        var _sessionData=$.parseJSON(decodeURIComponent($.imProSessionData));
-        chatMain.attach({
-            jid:_sessionData.username,
-            rid:_sessionData.rid,
-            sid:_sessionData.sid
+    if($.isFunction($.internalImLogin)){
+        $.internalImLogin().then(function (data) {
+            if($.isPlainObject(data)&&data.sid){
+                chatMain.attach({
+                    jid:data.username,
+                    rid:data.rid,
+                    sid:data.sid
+                });
+            }
         });
     }else {
-        chatMain.connectFail=true;
-        return;
+        loginBox.open();
+        loginBox.addHandler('xmppLoginClick',function (data) {
+            if(data.password&&data.jid){
+                chatMain.login(data);
+            }else{
+                util.toast('请填写完整')
+            }
+        });
+        chatMain.addHandler('xmppChatConnected',function(){
+            loginBox.close();
+        });
     }
 }
 chatMain.addHandler('xmppChatConnected',function(){
