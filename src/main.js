@@ -17,6 +17,9 @@ function login() {
                     rid:data.rid,
                     sid:data.sid
                 });
+            }else{
+                xmppChat.connectFail=true;
+                return;
             }
         });
     }else {
