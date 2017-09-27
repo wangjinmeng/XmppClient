@@ -14,16 +14,17 @@ function login() {
     if($.isFunction($.internalImLogin)){
         $.internalImLogin().then(function (data) {
             if(data.status==='success'){
+                xmppChat.connectStatus=1;
                 chatMain.attach({
                     jid:data.username,
                     rid:data.rid,
                     sid:data.sid
                 });
             }else if(data.status==='failed'){
-                logger.log('后台登录失败！！！')
-            }else{
-                xmppChat.connectFail=true;
-                return;
+                xmppChat.connectStatus=2;
+                logger.log('后台登录失败！！！');
+            }else if(data.status==='notLogin'){
+                xmppChat.connectStatus=3;
             }
         });
     }else {

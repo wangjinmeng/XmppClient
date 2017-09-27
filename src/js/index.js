@@ -20,6 +20,7 @@ let xmppChat={
     bosh_service:"http://192.168.3.28:7070/http-bind/",
     chatPanel:null,
     connectFail:false,//当connectFail为true表示 cookie和restore两种连接方式都失败
+    connectStatus:0,//0:正在初始化;1:登陆成功;2:登陆失败;3:未登录;
     curConnectStatus:null,//当前的连接状态
     isConnected:false,
     addHandler:function (eventName,fn) {
@@ -291,6 +292,7 @@ let xmppChat={
             // xmppChat.change_status(data.status);
             xmppChat.$event.trigger('xmppChatHide')
         });
+        xmppChat.connectStatus=1;
         xmppChat.isConnected=true;
     },
     storeMsg:{
@@ -322,14 +324,9 @@ let xmppChat={
 xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
 xmppChat.$event.on('xmppChatConnected',xmppChat.init);
 $(document).on('click','[xmpp-data-chat]',function(){
-    if(xmppChat.connectFail){
-        if($.isFunction($.redirectLogin)){
-            $.redirectLogin(location.href,'请先登录,才能联系商家');
-        }else{
-            util.toast('“'+productName+'”未登陆，请先登录');
-        }
-        return false
-    }else{
+    if(xmppChat.connectStatus===0){//正在初始化
+        util.toast('“'+productName+'”正在初始化');
+    }else if(xmppChat.connectStatus===1){//获取到正确的sid 准备登陆
         if(xmppChat.isConnected){//登陆成功或者已经连接
             let _name=$(this).attr('xmpp-data-chat');
             if(_name){
@@ -342,8 +339,16 @@ $(document).on('click','[xmpp-data-chat]',function(){
         }else{//其他登陆状态
             util.toast('“'+productName+'”正在登陆');
         }
-        return false;
+    }else if(xmppChat.connectStatus===2){//获取到sid数据失败
+        return true;
+    }else if(xmppChat.connectStatus===3){//未登录
+        if($.isFunction($.redirectLogin)){
+            $.redirectLogin(location.href,'请先登录,才能联系商家');
+        }else{
+            util.toast('“'+productName+'”未登陆，请先登录');
+        }
     }
+    return false;
 });
 window.xmppChat=xmppChat;
 export default xmppChat
