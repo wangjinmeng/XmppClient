@@ -693,6 +693,6 @@ var util = {
     addCookie:addCookie,
     removeCookie:removeCookie
 };
-// window.IMUtil=util
+window.IMUtil=util
 
 export default  util;

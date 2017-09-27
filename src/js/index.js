@@ -327,7 +327,7 @@ $(document).on('click','[xmpp-data-chat]',function(){
             }else{
                 util.toast('用户不存在');
             }
-        }else if(xmppChat.curConnectStatus===Strophe.Status.CONNFAIL){//登陆失败
+        }else if(xmppChat.curConnectStatus===Strophe.Status.AUTHFAIL){//登陆失败
             return true;
         }else{//其他登陆状态
             util.toast('“'+productName+'”正在登陆');
@@ -335,7 +335,7 @@ $(document).on('click','[xmpp-data-chat]',function(){
         return false;
     }else{
         if($.isFunction($.redirectLogin)){
-            $.redirectLogin(location.href);
+            $.redirectLogin(location.href,'请先登录,才能联系商家');
         }else{
             util.toast('“'+productName+'”未登陆，请先登录');
         }
