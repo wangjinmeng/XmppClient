@@ -11,13 +11,6 @@ import connectStatus from './connectStatus';
 import {Logger} from './logger'
 var logger=new Logger('chatMain');
 var productName='即时通讯';
-// function getJid(jid,domain){
-//     var _jidItem;
-//     if(jid.indexOf('@')!==-1){
-//         _jidItem=jid.slice(0,jid.indexOf('@'));
-//     }
-//     return _jidItem+'@'+domain;
-// }
 let xmppChat={
     jid:'',
     name:'',
