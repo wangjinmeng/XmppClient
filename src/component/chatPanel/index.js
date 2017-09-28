@@ -30,12 +30,13 @@ function getNode(name){
     return $(nodeStr)
 }
 function getContactNode(name,id,img,sub) {
+    let tipMsg='';
     if(sub=='none'||!sub){
-        name+='<span class="js-check">等待对方审核</span>'
+        tipMsg='<span class="js-check">等待对方审核</span>'
     }
     let nodeStr=`<div class="contact-list-item js-contact-items offline" data-jid="${id}" data-name="${name}">
                    <img class="tt" src="${img}"/>
-                   <span class="name">${name}</span>
+                   <span class="name">${name}${tipMsg}</span>
                    <span class="num js-num" style="display: none">0</span>
                    <span class="del js-del">&times;</span>
                 </div>`;
