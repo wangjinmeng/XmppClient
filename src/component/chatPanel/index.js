@@ -20,7 +20,9 @@ function getNode(name){
                             </div>
                         </div>
                         <div class="contact-cont">
-                            <div class="contact-list js-xmpp-chat-panel-contact-list"></div>
+                            <div class="contact-list js-xmpp-chat-panel-contact-list">
+                               <p class="contact-list-tip js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
+                            </div>
                             <div class="contact-handle hidden">
                                 <a class="cursor-pointer js-xmpp-chat-panel-add-contact">+</a>
                             </div>
@@ -165,14 +167,19 @@ ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
         return false;
     });
     _this.contactListCache[id]=_$contactNode;
+    _this.$node.find('.js-xmpp-chat-panel-contact-list-tip').addClass('hidden');
     _this.$node.find('.js-xmpp-chat-panel-contact-list').append(_$contactNode);
     return true
 };
 ChatMainPanel.prototype.delContact=function (id) {
+    var _this=this;
     var _$contactItem=this.contactListCache[id];
     if(!_$contactItem) return;
     _$contactItem.remove();
     this.contactListCache[id]=null;
+    if(this.$node.find('.js-contact-items').length==0){
+        this.$node.find('.js-xmpp-chat-panel-contact-list-tip').removeClass('hidden');
+    }
 };
 //status: offline/away/online
 ChatMainPanel.prototype.changeContactStatus=function (id,status) {

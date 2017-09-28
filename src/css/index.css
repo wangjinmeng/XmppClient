@@ -164,6 +164,10 @@
     bottom: 40px;
     width: 100%;
 }
+.contact-list-tip{
+    text-align: center;
+    color: #999;
+}
 .contact-list-item {
     position: relative;
     height: 42px;
