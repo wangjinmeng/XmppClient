@@ -9,8 +9,9 @@ import './css/index.css';
 import {Logger} from './js/logger'
 var logger=new Logger('main');
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
+$('body').append($initNode);
 function login() {
-    logger.log('执行restore失败尝试 attach')
+    logger.log('执行restore失败尝试 attach');
     if($.isFunction($.internalImLogin)){
         $.internalImLogin().then(function (data) {
             if(data.status==='success'){
@@ -28,7 +29,11 @@ function login() {
             }
         });
     }else {
-        loginBox.open();
+        $initNode.show();
+        $initNode.on('click.loginBox',function () {
+            $initNode.hide();
+            loginBox.open();
+        });
         loginBox.addHandler('xmppLoginClick',function (data) {
             if(data.password&&data.jid){
                 chatMain.login(data);
@@ -36,13 +41,17 @@ function login() {
                 util.toast('请填写完整')
             }
         });
+        loginBox.addHandler('xmppLoginClose',function (data) {
+            $initNode.show();
+            loginBox.hide();
+        });
         chatMain.addHandler('xmppChatConnected',function(){
             loginBox.close();
+            $initNode.off('click.loginBox');
         });
     }
 }
 chatMain.addHandler('xmppChatConnected',function(){
-    $('body').append($initNode);
     $initNode.show();
     $initNode.on('click',function () {
         $initNode.hide();

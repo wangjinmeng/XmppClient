@@ -42,11 +42,6 @@ let xmppChat={
             }else if(status===Strophe.Status.AUTHFAIL){
                 util.toast('“'+productName+'”登录失败');
                 xmppChat.$event.trigger('xmppChatDisconnected');
-            }else if(status===Strophe.Status.DISCONNECTED){
-                xmppChat.login({
-                    jid:xmppChat.connection.jid,
-                    password:xmppChat.connection.pass
-                });
             }
         });
     },
@@ -76,11 +71,6 @@ let xmppChat={
                 if($.isFunction(failFun)){
                     failFun()
                 }
-            }else if(status===Strophe.Status.DISCONNECTED){
-                xmppChat.login({
-                    jid:xmppChat.connection.jid,
-                    password:xmppChat.connection.pass
-                });
             }
         })
     },
@@ -249,15 +239,11 @@ let xmppChat={
         xmppChat.connection.send(_pre);
     },
     init:function(){
-        logger.log(xmppChat.connection);
-        xmppChat.name=Strophe.getNodeFromJid(xmppChat.connection.jid);
-        xmppChat.jid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
         xmppChat.connection.addHandler(xmppChat.on_message,null,'message');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');
-        xmppChat.chatPanel=ChatPanel(Strophe.getNodeFromJid(xmppChat.connection.jid),xmppChat.connection.jid);
         xmppChat.chatPanel.addHandler('xmppChatPanelSendMsg',function(data){
             xmppChat.send_message('chat',data);
         });
@@ -322,7 +308,20 @@ let xmppChat={
     }
 };
 xmppChat.connection=new Strophe.Connection(xmppChat.bosh_service,{'keepalive': true});
-xmppChat.$event.on('xmppChatConnected',xmppChat.init);
+xmppChat.$event.on('xmppChatConnected',function(){
+    let queryNameIq=$iq({
+        type:'get'
+    }).c('query',{xmlns:'jabber:iq:register'});
+    xmppChat.connection.sendIQ(queryNameIq,function(iq){
+        var $iq=$(iq);
+        var _jid=Strophe.getBareJidFromJid($(iq).attr('to'));
+        var _name=$iq.find('name').text();
+        xmppChat.name=_name?_name:_jid;
+        xmppChat.jid=_jid;
+        xmppChat.chatPanel=ChatPanel(xmppChat.name,xmppChat.jid);
+        xmppChat.init();
+    });
+});
 $(document).on('click','[xmpp-data-chat]',function(){
     if(xmppChat.connectStatus===0){//正在初始化
         util.toast('“'+productName+'”正在初始化');
