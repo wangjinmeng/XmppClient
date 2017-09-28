@@ -116,6 +116,7 @@ let xmppChat={
         return true;
     },
     on_presence:function (pre) {
+        console.log(pre)
         let $pre=$(pre);
         let _pType=$pre.attr('type');
         let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
@@ -141,13 +142,17 @@ let xmppChat={
                         type:'subscribed'
                     }));
                 }else{
-                    util.confirm('接受'+_name +'发来的好友请求吗？',function (flag) {
-                        //   接受处理
-                        if(flag){
+                    util.dialog({
+                        title:"系统消息",
+                        content:'接受'+_name +'发来的好友请求吗？',
+                        okText:"确认",
+                        ok:function(){
                             xmppChat.accept_contact(_name,_fromJid);
-                            return true;
-                        }
-                    });
+                        },
+                        cancelText:"拒绝",
+                        cancel:function(){
+                            xmppChat.unAccept_contact(_name,_fromJid)
+                        }});
                 }
             }else if(_pType==='subscribed'){
                 //收到接受订阅出席通知
@@ -159,6 +164,9 @@ let xmppChat={
                         util.toast(_name+'同意了你的好友请求');
                     }
                 }
+            }else if(_pType==='unsubscribe'){
+                util.toast(_name+'拒绝了你的好友请求');
+                xmppChat.del_contact(_fromJid);
             }else if(_pType!=='error'){
                 let _status;
                 if(_pType=='unavailable'){
@@ -226,6 +234,12 @@ let xmppChat={
             type:'subscribe'
         }));
         xmppChat.chatPanel.addContact(name,id,ttImg,'both')
+    },
+    unAccept_contact:function (name,id) {
+        xmppChat.connection.send($pres({
+            to:id,
+            type:'unsubscribe'
+        }));
     },
     change_status:function (status) {
         var _pre;
