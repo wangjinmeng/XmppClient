@@ -11,6 +11,13 @@ import connectStatus from './connectStatus';
 import {Logger} from './logger'
 var logger=new Logger('chatMain');
 var productName='即时通讯';
+function getJid(jid,domain){
+    var _jidItem;
+    if(jid.indexOf('@')!==-1){
+        _jidItem=jid.slice(0,jid.indexOf('@'));
+    }
+    return _jidItem+'@'+domain;
+}
 let xmppChat={
     jid:'',
     name:'',
@@ -77,12 +84,13 @@ let xmppChat={
     on_roster:function (iq) {
         $(iq).find('item').each(function (){
             let _name=$(this).attr('name');
-            let _jid=$(this).attr('jid');
+            let _jidItem=$(this).attr('jid');
+            let _jid=getJid(_jidItem,xmppChat.domain);
             let _subscript=$(this).attr('subscription');
             let _img=ttImg;
             xmppChat.chatPanel.addContact(_name?_name:Strophe.getNodeFromJid(_jid),_jid,_img,_subscript);
         });
-        xmppChat.change_status('offline');
+        xmppChat.change_status('online');
     },
     on_message:function (msg) {
         let $msg=$(msg);
@@ -243,6 +251,9 @@ let xmppChat={
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
         xmppChat.connection.addHandler(xmppChat.on_message,null,'message');
+        xmppChat.connection.addHandler(function(d){
+            console.log(d)
+        },null,'error');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');
         xmppChat.chatPanel.addHandler('xmppChatPanelSendMsg',function(data){
             xmppChat.send_message('chat',data);
@@ -313,7 +324,6 @@ xmppChat.$event.on('xmppChatConnected',function(){
         type:'get'
     }).c('query',{xmlns:'jabber:iq:register'});
     xmppChat.connection.sendIQ(queryNameIq,function(iq){
-        console.log(iq)
         var $iq=$(iq);
         var _jid=Strophe.getBareJidFromJid($(iq).attr('to'));
         var _name=$iq.find('name').text();
