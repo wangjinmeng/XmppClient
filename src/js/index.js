@@ -313,10 +313,11 @@ xmppChat.$event.on('xmppChatConnected',function(){
         type:'get'
     }).c('query',{xmlns:'jabber:iq:register'});
     xmppChat.connection.sendIQ(queryNameIq,function(iq){
+        console.log(iq)
         var $iq=$(iq);
         var _jid=Strophe.getBareJidFromJid($(iq).attr('to'));
         var _name=$iq.find('name').text();
-        xmppChat.name=_name?_name:_jid;
+        xmppChat.name=_name?_name:$iq.find('username').text();
         xmppChat.jid=_jid;
         xmppChat.chatPanel=ChatPanel(xmppChat.name,xmppChat.jid);
         xmppChat.init();
