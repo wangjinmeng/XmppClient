@@ -10,6 +10,7 @@ import {Logger} from './js/logger'
 var logger=new Logger('main');
 let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
 $('body').append($initNode);
+$initNode.hide();
 function login() {
     logger.log('执行restore失败尝试 attach');
     if($.isFunction($.internalImLogin)){
