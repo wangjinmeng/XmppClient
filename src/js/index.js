@@ -11,13 +11,13 @@ import connectStatus from './connectStatus';
 import {Logger} from './logger'
 var logger=new Logger('chatMain');
 var productName='即时通讯';
-function getJid(jid,domain){
-    var _jidItem;
-    if(jid.indexOf('@')!==-1){
-        _jidItem=jid.slice(0,jid.indexOf('@'));
-    }
-    return _jidItem+'@'+domain;
-}
+// function getJid(jid,domain){
+//     var _jidItem;
+//     if(jid.indexOf('@')!==-1){
+//         _jidItem=jid.slice(0,jid.indexOf('@'));
+//     }
+//     return _jidItem+'@'+domain;
+// }
 let xmppChat={
     jid:'',
     name:'',
@@ -84,13 +84,14 @@ let xmppChat={
     on_roster:function (iq) {
         $(iq).find('item').each(function (){
             let _name=$(this).attr('name');
-            let _jidItem=$(this).attr('jid');
-            let _jid=getJid(_jidItem,xmppChat.domain);
+            let _jid=$(this).attr('jid');
             let _subscript=$(this).attr('subscription');
             let _img=ttImg;
             xmppChat.chatPanel.addContact(_name?_name:Strophe.getNodeFromJid(_jid),_jid,_img,_subscript);
         });
-        xmppChat.change_status('online');
+        setTimeout(function () {
+            xmppChat.change_status('online');
+        },1000)
     },
     on_message:function (msg) {
         let $msg=$(msg);
@@ -128,10 +129,10 @@ let xmppChat={
         let _name=Strophe.getNodeFromJid(_fromJid);
         if(_fromJid==xmppChat.jid){
             //此处处理与自己相关的出席通知
-            if(_pType!=='error'&&_pType!=='subscribe'&&_pType!=='subscribed'){
-                if(_pType){
+            if(_pType!=='error'){
+                if(_pType&&_pType!=='subscribe'&&_pType!=='subscribed'){
                     _pType='offline';
-                }else if(!_pType){
+                }else{
                     var show=$pre.find('show').text();
                     _pType=show?'away':'online';
                 }
@@ -247,6 +248,7 @@ let xmppChat={
         xmppChat.connection.send(_pre);
     },
     init:function(){
+        xmppChat.change_status('offline');
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
