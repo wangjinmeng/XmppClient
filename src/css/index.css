@@ -158,9 +158,27 @@
     height: 460px;
     position: relative;
 }
+.contact-tab{
+    width:100%;
+    text-align: center;
+    background: #ddd;
+    line-height: 2em;
+    overflow: hidden;
+}
+.contact-tab-item{
+    float: left;
+    text-align: center;
+    width:50%;
+    display: inline-block;
+    border-bottom: 2px solid #ddd;
+    cursor: pointer;
+}
+.contact-tab-item.active{
+    border-bottom-color: #5fb878;
+}
 .contact-list {
     position: absolute;
-    top: 0;
+    top: 32px;
     bottom: 40px;
     width: 100%;
 }

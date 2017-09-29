@@ -260,9 +260,10 @@ let xmppChat={
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
         xmppChat.connection.addHandler(xmppChat.on_message,null,'message');
-        xmppChat.connection.addHandler(function(d){
-            console.log(d)
-        },null,'error');
+        xmppChat.connection.addHandler(function(data){
+            logger.error(data)
+            return true;
+        },null,null,'error');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');
         xmppChat.chatPanel.addHandler('xmppChatPanelSendMsg',function(data){
             xmppChat.send_message('chat',data);

@@ -20,12 +20,22 @@ function getNode(name){
                             </div>
                         </div>
                         <div class="contact-cont">
-                            <div class="contact-list js-xmpp-chat-panel-contact-list">
-                               <p class="contact-list-tip js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
+                            <div class="contact-tab">
+                                <a class="contact-tab-item active js-xmpp-chat-panel-contact-tab-item">联系人</a>
+                                <a class="contact-tab-item js-xmpp-chat-panel-contact-tab-item">会话</a>
                             </div>
-                            <div class="contact-handle hidden">
-                                <a class="cursor-pointer js-xmpp-chat-panel-add-contact">+</a>
+                            <div>
+                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-list">
+                                   <p class="contact-list-tip  js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
+                                </div>
+                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-chat-list hidden">
+                                   <p class="contact-list-tip">暂无会话</p>
+                                </div>
                             </div>
+                            
+                            <!--<div class="contact-handle hidden">-->
+                                <!--<a class="cursor-pointer js-xmpp-chat-panel-add-contact">+</a>-->
+                            <!--</div>-->
                         </div>
                     </div>
                 </div>`;
@@ -113,6 +123,14 @@ ChatMainPanel.prototype.init=function () {
         let _statua=$(this).val();
         _this.$event.trigger('xmppChatMainPanelChangeStatus',{status:_statua,id:_this.id});
         return false;
+    });
+    _this.$node.find('.js-xmpp-chat-panel-contact-tab-item').on('click',function () {
+        var _index=$(this).index();
+        if($(this).hasClass('active')) return;
+        $(this).addClass('active').siblings().removeClass('active');
+        _this.$node.find('.js-xmpp-chat-panel-list').addClass('hidden');
+        _this.$node.find('.js-xmpp-chat-panel-list').eq(_index).removeClass('hidden');
+        return false
     });
     _this.$node.on('click','.js-contact-items',function () {
         let _name=$(this).attr('data-name');
