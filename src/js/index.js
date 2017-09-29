@@ -116,7 +116,6 @@ let xmppChat={
         return true;
     },
     on_presence:function (pre) {
-        console.log(pre)
         let $pre=$(pre);
         let _pType=$pre.attr('type');
         let _fromJid=Strophe.getBareJidFromJid($pre.attr('from'));
@@ -261,7 +260,7 @@ let xmppChat={
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
         xmppChat.connection.addHandler(xmppChat.on_message,null,'message');
         xmppChat.connection.addHandler(function(data){
-            logger.error(data)
+            console.error(data);
             return true;
         },null,null,'error');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');

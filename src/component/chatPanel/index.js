@@ -21,18 +21,17 @@ function getNode(name){
                         </div>
                         <div class="contact-cont">
                             <div class="contact-tab">
-                                <a class="contact-tab-item active js-xmpp-chat-panel-contact-tab-item">联系人</a>
                                 <a class="contact-tab-item js-xmpp-chat-panel-contact-tab-item">会话</a>
+                                <a class="contact-tab-item active js-xmpp-chat-panel-contact-tab-item">联系人</a>
                             </div>
                             <div>
-                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-list">
-                                   <p class="contact-list-tip  js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
-                                </div>
-                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-chat-list hidden">
+                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-chat-list ">
                                    <p class="contact-list-tip">暂无会话</p>
                                 </div>
+                                <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-list hidden">
+                                   <p class="contact-list-tip  js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
+                                </div>
                             </div>
-                            
                             <!--<div class="contact-handle hidden">-->
                                 <!--<a class="cursor-pointer js-xmpp-chat-panel-add-contact">+</a>-->
                             <!--</div>-->
@@ -104,7 +103,6 @@ let ChatMainPanel=function (name,id) {
     this.chatBox=null;
     this.addContactPopup=null;
 };
-
 ChatMainPanel.prototype.init=function () {
     let _this=this;
     _this.chatBox=ChatBox();

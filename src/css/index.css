@@ -259,8 +259,8 @@
 
 .xmpp-chat-box{
     width: 600px;
-    background-image: url(../img/bg.jpg);
-    background-color: #fff;
+    /*background-image: url(../img/bg.jpg);*/
+    background-color: #ddd;
     background-size: cover;
     border-top: 3px solid #e6e6e6;
 }
