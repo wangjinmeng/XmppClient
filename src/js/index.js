@@ -144,7 +144,7 @@ let xmppChat={
                     util.dialog({
                         title:"系统消息",
                         content:'接受'+_name +'发来的好友请求吗？',
-                        okText:"确认",
+                        okText:"接受",
                         ok:function(){
                             xmppChat.accept_contact(_name,_fromJid);
                         },

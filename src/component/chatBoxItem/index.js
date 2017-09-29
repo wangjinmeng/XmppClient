@@ -3,6 +3,7 @@
  */
 import $ from 'jquery';
 import tool from '../../js/tool'
+import util from '../../plugin/util/util'
 import richEdit from '../richEdit/index';
 import fromHtImg from './img/qq.jpg';
 import myHtImg from './img/tt.jpg';
@@ -90,7 +91,8 @@ let ChatBoxItem=function (name,id,flag) {
     this.richEdit=null;
     this.scrollTimer=null;
     this.$event=$('<div></div>');
-    this.isFriendFlag=flag
+    this.isFriendFlag=flag;
+    this.textMaxLength=500;
 };
 ChatBoxItem.prototype.init=function () {
     let _this=this;
@@ -106,7 +108,10 @@ ChatBoxItem.prototype.init=function () {
     _this.$node.find('.js-xmpp-chat-box-item-text-area').append(_this.richEdit.$node);
     _this.$node.find('.js-xmpp-chat-box-item-send-msg-btn').on('click',function(){
         let _text=_this.richEdit.getText();
-        if(_text){
+        if (!_text) return false;
+        if(_text.length>_this.textMaxLength) {
+            util.toast('文字过多,最大限制'+_this.textMaxLength+'字');
+        }else{
             _this.richEdit.resetTextArea();
             _this.handleMsgDom(_text,tool.dealTime(new Date()),'send');
             _this.scrollToBottom();

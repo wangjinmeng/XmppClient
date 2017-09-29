@@ -10,6 +10,7 @@
     position: relative;
     display: inline-block;
 }
+.xmpp-rich-edit-text-num,
 .xmpp-rich-edit-tool-item{
     font-size: 16px;
     padding: 0.5em;
@@ -34,6 +35,8 @@
 .xmpp-rich-edit-textarea{
     width:100%;
     height: 100px;
-    overflow-x: auto;
-    padding: 0 8px;
+    overflow: auto;
+    padding: 8px;
+    word-wrap: break-word;
+    outline: none;
 }

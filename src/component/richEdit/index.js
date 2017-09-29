@@ -17,6 +17,9 @@ function getHtmlNode(count){
                     <li class="xmpp-rich-edit-tool-item-box">
                         <a class="js-xmpp-rich-edit-bold xmpp-rich-edit-tool-item">加粗</a>
                     </li>
+                    <li class="fr">
+                        <span class="js-xmpp-rich-edit-limit xmpp-rich-edit-text-num"></span>
+                    </li>
                 </ul>
                 <div composing="false" id="js-xmpp-rich-edit-textarea-${count}" class="xmpp-rich-edit-textarea js-xmpp-rich-edit-textarea" contenteditable="true"></div>
             </div>`);
@@ -81,11 +84,20 @@ RichEdit.prototype.init =function () {
         _this.$node.find('.js-xmpp-rich-edit-qq-face-box').toggle();
         return false
     });
+    _this.$textarea.on('keyup',function(e){
+        var _textNum=$(this).text().length;
+        var _numText='共'+_textNum+'字';
+        if(_textNum==0){
+            _numText='';
+        }
+        _this.$node.find('.js-xmpp-rich-edit-limit').text(_numText);
+    });
 };
 RichEdit.prototype.getText=function () {
     return this.$textarea.html();
 };
 RichEdit.prototype.resetTextArea=function () {
+    this.$node.find('.js-xmpp-rich-edit-limit').text('');
     this.$textarea.html('');
 };
 RichEdit.prototype.addHandle=function (eventName,fn) {
