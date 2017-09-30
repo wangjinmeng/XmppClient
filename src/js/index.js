@@ -199,13 +199,15 @@ let xmppChat={
         //失去焦点发送空消息
         xmppChat.connection.send(msg);
     },
-    del_contact:function(jid){
+    del_contact:function(jid,flag){//flag:表示是否是主动删除好友,false或者不传表示 对方拒绝了好友请求
         let iq=$iq({type:'set'}).c('query',{xmlns:'jabber:iq:roster'}).c('item',{
             jid:jid,
             subscription:'remove'
         });
         xmppChat.connection.sendIQ(iq,function(d){
-            util.toast('删除成功');
+            if(flag){
+                util.toast('删除成功');
+            }
             xmppChat.chatPanel.delContact(jid);
         });
     },
@@ -284,7 +286,7 @@ let xmppChat={
         xmppChat.chatPanel.addHandler('xmppMainPanelDelContace',function (data) {
             util.confirm("你确定删除"+Strophe.getNodeFromJid(data.id)+"吗？",function (flag) {
                 if(flag){
-                    xmppChat.del_contact(data.id);
+                    xmppChat.del_contact(data.id,true);
                 }
             });
         });
@@ -351,7 +353,6 @@ let xmppChat={
             let myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
             let keyName=myJid+'&'+jid;
             localStorage.removeItem(keyName);
-            console.log(localStorage.getItem(keyName));
         }
     }
 };

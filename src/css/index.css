@@ -192,10 +192,12 @@
 }
 .contact-list-item {
     position: relative;
-    height: 42px;
-    padding: 5px 15px 5px 60px;
+    height: 60px;
+    padding: 5px 15px 5px 70px;
     font-size: 0;
     cursor: pointer;
+    display: table;
+    width: 100%;
 }
 .contact-list-item:hover {
     background-color: rgba(0,0,0,.05);
@@ -203,25 +205,23 @@
 .contact-list-item .tt {
     position: absolute;
     left: 15px;
-    width: 36px;
-    height: 36px;
+    width: 50px;
     border-radius: 100%;
+    padding: 5px;
 }
-.contact-list-item .name {
-    /* margin-top: 10px; */
+.contact-list-item .name{
     max-width: 155px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    display: inline-block;  *
-    display: inline;  *
     zoom: 1;
-    vertical-align: top;
-    font-size: 18px;
-    line-height: 36px;
+    font-size: 16px;
     color: #333;
+    display: table-cell;
+    vertical-align: middle;
 }
 .contact-list-item .name .check {
+    display: block;
     font-size: 12px;
     color: #999;
 }
@@ -241,7 +241,7 @@
     line-height: 1em;
     background: red;
     display: none;
-    margin-top: 10px;
+    margin-top: 15px;
     float: right;
     color: #fff;
     font-size: 16px;
