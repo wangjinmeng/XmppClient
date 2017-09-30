@@ -255,6 +255,7 @@ let xmppChat={
     },
     init:function(){
         xmppChat.change_status('offline');
+        xmppChat.getChatList();
         let iq=$iq({type:'get'}).c('query',{xmlns:'jabber:iq:roster'});
         xmppChat.connection.sendIQ(iq,xmppChat.on_roster);
         xmppChat.connection.addHandler(xmppChat.on_presence,null,'presence');
@@ -265,6 +266,7 @@ let xmppChat={
         },null,null,'error');
         xmppChat.connection.addHandler(xmppChat.on_roster_changed,'jabber:iq:roster','iq','set');
         xmppChat.chatPanel.addHandler('xmppChatPanelSendMsg',function(data){
+            xmppChat.chatPanel.addChatItem(Strophe.getNodeFromJid(data.id),data.id);
             xmppChat.send_message('chat',data);
         });
         xmppChat.chatPanel.addHandler('xmppChatPanelFocus',function (data) {
@@ -298,8 +300,28 @@ let xmppChat={
             // xmppChat.change_status(data.status);
             xmppChat.$event.trigger('xmppChatHide')
         });
+        xmppChat.chatPanel.addHandler('xmppChatMainPanelChangeTotalUnReadMsg',function (data) {
+            xmppChat.$event.trigger('xmppChatChangeTotalUnReadMsg',data)
+        });
+        xmppChat.chatPanel.addHandler('xmppChatMainPanelDelChatItem',function (data) {
+            xmppChat.delChatItem(data.jid);
+        });
         xmppChat.connectStatus=1;
         xmppChat.isConnected=true;
+    },
+    getChatList:function(){
+        let _jid=xmppChat.jid;
+        let _localStorage=localStorage;
+        for(let key in _localStorage){
+            let _keyArr=key.split('&');
+            if(_keyArr[0]==_jid){
+                xmppChat.chatPanel.addChatItem(Strophe.getNodeFromJid(_keyArr[1]),_keyArr[1])
+            }
+        }
+    },
+    delChatItem:function (jid) {
+        xmppChat.storeMsg.del(jid);
+        xmppChat.chatPanel.delChatItem(jid)
     },
     storeMsg:{
         maxLen:500,
@@ -324,6 +346,12 @@ let xmppChat={
                 return [];
             }
             return JSON.parse(msg);
+        },
+        del:function (jid) {
+            let myJid=Strophe.getBareJidFromJid(xmppChat.connection.jid);
+            let keyName=myJid+'&'+jid;
+            localStorage.removeItem(keyName);
+            console.log(localStorage.getItem(keyName));
         }
     }
 };

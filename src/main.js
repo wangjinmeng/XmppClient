@@ -8,7 +8,9 @@ import loginBox from './component/loginBox/index'
 import './css/index.css';
 import {Logger} from './js/logger'
 var logger=new Logger('main');
-let $initNode=$('<span class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯</span>');
+let $initNode=$('<a class="xmpp-box xmpp-contact-us xmpp-shake-animate" id="js-xmpp-chat-thumb">即时通讯' +
+                    '<span class="js-xmpp-chat-thumb-num xmpp-chat-thumb-num" style="display: none;"></span>' +
+                '</a>');
 $('body').append($initNode);
 $initNode.hide();
 function login() {
@@ -58,6 +60,14 @@ chatMain.addHandler('xmppChatConnected',function(){
         $initNode.hide();
         chatMain.chatPanel.show();
     });
+    chatMain.addHandler('xmppChatChangeTotalUnReadMsg',function(data){
+        $initNode.find('.js-xmpp-chat-thumb-num').text(data.num);
+        if(data.num>0){
+            $initNode.find('.js-xmpp-chat-thumb-num').show();
+        }else{
+            $initNode.find('.js-xmpp-chat-thumb-num').hide();
+        }
+    })
 });
 chatMain.addHandler('xmppChatHide',function(){
     $initNode.show();

@@ -44,7 +44,7 @@ ChatBox.prototype.init=function () {
 };
 ChatBox.prototype.initChatBoxItem=function (name,id,flag) {
     var _this=this;
-    var domId=idToDomId(id)
+    var domId=idToDomId(id);
     var _chatBoxItem=chatBoxItem(name,id,flag);
     var _slideNavNode=getSlideNode(name,domId);
     _slideNavNode.on('click',function(){
@@ -148,10 +148,10 @@ ChatBox.prototype.addHandler=function (eventName,fn) {
     })
 };
 //收到消息
-ChatBox.prototype.receiveMsg=function (name,id,data) {
+ChatBox.prototype.receiveMsg=function (name,id,data,flag) {
     let _this=this;
     if(!_this.chatBoxItemsCache[id]){
-        _this.initChatBoxItem(name,id);
+        _this.initChatBoxItem(name,id,flag);
     }
     let _chatBoxItem=_this.chatBoxItemsCache[id];
     _chatBoxItem.main.handleMsgDom(data.msg,data.time);
@@ -183,11 +183,8 @@ ChatBox.prototype.hideStatus=function (id) {
     this.chatBoxItemsCache[id].main.hideStatus()
 };
 //接受到历史消息
-ChatBox.prototype.receiveHistroyMsg=function (name,id,data) {
+ChatBox.prototype.receiveHistroyMsg=function (name,id,data,flag) {
     var _this=this;
-    if(!_this.chatBoxItemsCache[id]){
-        _this.initChatBoxItem(name,id);
-    }
     let _chatBoxItem=_this.chatBoxItemsCache[id];
     _chatBoxItem.main.receiveHistroyMsg(data);
     if(_this.activeItemId===id){

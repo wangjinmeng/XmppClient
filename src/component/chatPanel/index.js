@@ -5,6 +5,7 @@
 import $ from 'jquery';
 import ChatBox from '../chatBox/index';
 import util from '../../plugin/util/util'
+let ttImg=require('../../img/tt.jpg');
 function getNode(name){
     let nodeStr= `<div id="main-panel" class="xmpp-box  js-xmpp-chat-panel-box">
                     <div class=" xmpp-box-shadow contact-wp pr js-xmpp-chat-panel">
@@ -21,12 +22,12 @@ function getNode(name){
                         </div>
                         <div class="contact-cont">
                             <div class="contact-tab">
-                                <a class="contact-tab-item js-xmpp-chat-panel-contact-tab-item">会话</a>
-                                <a class="contact-tab-item active js-xmpp-chat-panel-contact-tab-item">联系人</a>
+                                <a class="contact-tab-item active js-xmpp-chat-panel-contact-tab-item">会话</a>
+                                <a class="contact-tab-item  js-xmpp-chat-panel-contact-tab-item">联系人</a>
                             </div>
                             <div>
                                 <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-chat-list ">
-                                   <p class="contact-list-tip">暂无会话</p>
+                                   <p class="contact-list-tip  js-xmpp-chat-panel-contact-chat-list-tip">暂无会话</p>
                                 </div>
                                 <div class="contact-list js-xmpp-chat-panel-list js-xmpp-chat-panel-contact-list hidden">
                                    <p class="contact-list-tip  js-xmpp-chat-panel-contact-list-tip">暂无联系人</p>
@@ -48,6 +49,14 @@ function getContactNode(name,id,img,sub) {
     let nodeStr=`<div class="contact-list-item js-contact-items offline" data-jid="${id}" data-name="${name}">
                    <img class="tt" src="${img}"/>
                    <span class="name">${name}${tipMsg}</span>
+                   <span class="del js-del">&times;</span>
+                </div>`;
+    return $(nodeStr)
+}
+function getChatNode(name,id) {
+    let nodeStr=`<div class="contact-list-item js-contact-items offline js-chat-items" data-jid="${id}" data-name="${name}">
+                   <img class="tt" src="${ttImg}"/>
+                   <span class="name">${name}</span>
                    <span class="num js-num" style="display: none">0</span>
                    <span class="del js-del">&times;</span>
                 </div>`;
@@ -99,9 +108,17 @@ let ChatMainPanel=function (name,id) {
     this.id=id;
     this.$event=$('<div></div>');
     this.contactListCache=[];
+    this.chatListCache=[];
     this.popup=null;
     this.chatBox=null;
     this.addContactPopup=null;
+    this.unReadMsg=0;
+};
+//传入消息增减数量
+ChatMainPanel.prototype.changeTotalUnReadMsg=function (before,afer) {
+    this.unReadMsg-=before;
+    this.unReadMsg+=afer;
+    this.$event.trigger('xmppChatMainPanelChangeTotalUnReadMsg',{num:this.unReadMsg});
 };
 ChatMainPanel.prototype.init=function () {
     let _this=this;
@@ -134,7 +151,7 @@ ChatMainPanel.prototype.init=function () {
         let _name=$(this).attr('data-name');
         let _id=$(this).attr('data-jid');
         _this.showItem(_name,_id);
-        $(this).find('.js-num').html('0').hide();
+        _this.changeChatItemUnReadMsgNum(_id,0);
         return false;
     });
     _this.popup=util.popup({
@@ -159,7 +176,6 @@ ChatMainPanel.prototype.init=function () {
     _this.chatBox.addHandler('xmppChatBoxAdd',function (data) {
         _this.$event.trigger('xmppChatPanelAdd',data)
     });
-
 };
 ChatMainPanel.prototype.show=function () {
     this.popup.open();
@@ -187,6 +203,49 @@ ChatMainPanel.prototype.addContact=function (name,id,img,sub) {
     _this.$node.find('.js-xmpp-chat-panel-contact-list').append(_$contactNode);
     return true
 };
+ChatMainPanel.prototype.addChatItem=function (name,id) {
+    // 添加会话
+    let _this=this;
+    if(_this.chatListCache[id]){return false}
+    let _$chatNode=getChatNode(name,id);
+    _$chatNode.find('.js-del').on('click',function () {
+        _this.$event.trigger('xmppChatMainPanelDelChatItem',{jid:id})
+    });
+    _this.chatListCache[id]={
+        unReadMsg:0,
+        $node:_$chatNode
+    };
+    _this.$node.find('.js-xmpp-chat-panel-contact-chat-list-tip').addClass('hidden');
+    _this.$node.find('.js-xmpp-chat-panel-contact-chat-list').append(_$chatNode);
+    return true
+};
+ChatMainPanel.prototype.delChatItem=function (id) {
+    //删除会话
+    let _this=this;
+    let _$chatItem=_this.chatListCache[id];
+    if(!_$chatItem) return;
+    _$chatItem.$node.remove();
+    _this.chatListCache[id]=null;
+    if(this.$node.find('.js-chat-items').length==0){
+        this.$node.find('.js-xmpp-chat-panel-contact-chat-list-tip').removeClass('hidden');
+    }
+};
+ChatMainPanel.prototype.changeChatItemUnReadMsgNum=function (id,num) {
+    let _chatItem=this.chatListCache[id];
+    if(!_chatItem) return false;
+    this.changeTotalUnReadMsg(_chatItem.unReadMsg,num);
+    _chatItem.unReadMsg=num;
+    let _$chatItemNode=_chatItem.$node.find('.js-num');
+    _$chatItemNode.html(num);
+    if(num==0){
+        _$chatItemNode.hide();
+    }else{
+        _$chatItemNode.show();
+    }
+
+    return true
+};
+
 ChatMainPanel.prototype.delContact=function (id) {
     var _this=this;
     var _$contactItem=this.contactListCache[id];
@@ -200,17 +259,21 @@ ChatMainPanel.prototype.delContact=function (id) {
 //status: offline/away/online
 ChatMainPanel.prototype.changeContactStatus=function (id,status) {
     let _$contactItem=this.contactListCache[id];
+    let _$chatItem=this.chatListCache[id];
     _$contactItem.removeClass('offline').removeClass('away').removeClass('online').addClass(status);
+    _$chatItem.$node.removeClass('offline').removeClass('away').removeClass('online').addClass(status);
 };
+
 ChatMainPanel.prototype.receiveMsg=function (name,id,data) {
-    let _res=this.chatBox.receiveMsg(name,id,data);
-    let _$unReadMsgNum=this.contactListCache[id].find('.js-num');
-    if(_res){
-        _$unReadMsgNum.html('0').hide();
-    }else{
-        let _unReadNum=parseInt(_$unReadMsgNum.html())+1;
-        _$unReadMsgNum.html(_unReadNum).show();
+    let _res=this.chatBox.receiveMsg(name,id,data,this.contactListCache[id]?true:false);//false 表示盒子未显示 true表示盒子已经显示
+    if(!this.chatListCache[id]){
+        this.addChatItem(name,id);
     }
+    let _num=0;
+    if(!_res){
+        _num=this.chatListCache[id].unReadMsg+1;
+    }
+    this.changeChatItemUnReadMsgNum(id,_num)
 };
 ChatMainPanel.prototype.receiveHistroyMsg=function (name,id,data) {
     this.chatBox.receiveHistroyMsg(name,id,data);
