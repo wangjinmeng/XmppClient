@@ -44,11 +44,14 @@ function getNode(name){
 function getContactNode(name,id,img,sub) {
     let tipMsg='';
     if(sub=='none'||!sub){
-        tipMsg='<span class="js-check">等待对方审核</span>'
+        tipMsg='<span class="check js-check">等待对方审核</span>'
     }
     let nodeStr=`<div class="contact-list-item js-contact-items offline" data-jid="${id}" data-name="${name}">
                    <img class="tt" src="${img}"/>
-                   <span class="name">${name}${tipMsg}</span>
+                   <a class="name">
+                       <span>${name}</span>
+                        ${tipMsg}
+                    </a>
                    <span class="del js-del">&times;</span>
                 </div>`;
     return $(nodeStr)
