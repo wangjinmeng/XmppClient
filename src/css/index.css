@@ -189,6 +189,10 @@
 .contact-list-tip{
     text-align: center;
     color: #999;
+    margin:0;
+    font-size: 16px;
+    height: 3em;
+    padding:1em;
 }
 .contact-list-item {
     position: relative;
